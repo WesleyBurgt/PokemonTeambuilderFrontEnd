@@ -1,4 +1,4 @@
-name: CI/CD for PokemonTeambuilder .NET Backend
+name: CI/CD for Next.js
 
 # Trigger the workflow on push or pull request
 on:
@@ -20,23 +20,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Set up .NET Core
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v3
+      # Set up Node.js for the frontend
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          dotnet-version: '8.0.x'
+          node-version: '18.x'
 
-      # Restore dependencies
-      - name: Restore dependencies
-        run: dotnet restore
+      # Install dependencies and build the Next.js frontend
+      - name: Install dependencies
+        run: |
+          npm install
 
-      # Build the .NET application
-      - name: Build application
-        run: dotnet build --configuration Release
-
-      # Run tests
-      - name: Run tests
-        run: dotnet test
+      # Build the Next.js frontend
+      - name: Build Next.js
+        run: |
+          npm run build
 
   deploy:
     runs-on: ubuntu-latest
@@ -46,10 +44,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Deploy to Azure Web App (or any other service)
-      - name: Deploy to Azure Web App
-        uses: Azure/webapps-deploy@v2
-        with:
-          app-name: PokemonTeambuilder
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./bin/Release/net8.0/publish
+      # Deploy the frontend using Vercel CLI
+      - name: Deploy to Vercel
+        run: |
+          npm install -g vercel
+          vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
