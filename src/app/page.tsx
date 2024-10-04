@@ -1,101 +1,245 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+import React, { useState, useEffect } from 'react'
+import { Button } from "@/components/ui/button"
+import TeamOverview from '@/components/teamOverview'
+import PokemonList from '@/components/pokemonList'
+import PokemonDetail from '@/components/pokemonStatTab'
+import TeamAnalysis from '@/components/teamAnalysis'
+import TeamList from '@/components/teamList'
+import { Nature, Pokemon, BasePokemon, Team } from './types'
+import { setDefaultAutoSelectFamilyAttemptTimeout } from 'net'
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+export default function PokemonTeamBuilder() {
+    const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
+
+    const [teams, SetTeams] = useState<Team[]>([])
+    const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
+    const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null)
+    const [view, setView] = useState<'list' | 'detail' | 'team' | 'teamList'>('teamList')
+    const [loading, setLoading] = useState(false)
+    const [genders, setGenders] = useState<string[]>([])
+    const [natures, setNatures] = useState<Nature[]>([])
+    const [items, setItems] = useState<string[]>([])
+
+    const [offset, setOffset] = useState<number>(0);
+    const pokemonFetchLimit = 1400;
+
+    useEffect(() => {
+        fetchGenders();
+        fetchNatures();
+        fetchItems();
+        fetchPokemonList(offset);
+        SetTeams(getTeamsFromLocalStorage)
+    }, []);
+
+    const getTeamsFromLocalStorage = (): Team[] => {
+        const storedTeams = localStorage.getItem("teams");
+        
+        if (storedTeams) {
+            try {
+                return JSON.parse(storedTeams) as Team[];
+            } catch (error) {
+                console.error("Error parsing teams from localStorage:", error);
+                return [];
+            }
+        }
+        return [];
+    };
+
+    const fetchPokemonList = async (offset: number) => {
+        try {
+            setLoading(true)
+            const response = await fetch(`https://localhost:7010/Pokemon?offset=${offset}&limit=${pokemonFetchLimit}`)
+            const data = await response.json()
+            const detailedPokemonList = await Promise.all(
+                data.map((pokemon: BasePokemon) => ({
+                    id: pokemon.id,
+                    name: pokemon.name,
+                    typings: pokemon.typings.map(typing => typing),
+                    abilities: pokemon.abilities.map(ability => ability),
+                    baseStats: pokemon.baseStats,
+                    moves: pokemon.moves.map(move => move),
+                    sprite: pokemon.sprite
+                })));
+
+            const newPokemonList = detailedPokemonList.filter(pokemon =>
+                !pokemonList.some(existingPokemon => existingPokemon.id === pokemon.id)
+            );
+
+            setPokemonList(prevList => [...prevList, ...newPokemonList])
+            console.log("offset: " + offset)
+            setLoading(false)
+        } catch (error) {
+            console.error('Error fetching Pokemon list:', error)
+            setLoading(false)
+        }
+    }
+
+    const fetchGenders = async () => {
+        try {
+            const response = await fetch('https://pokeapi.co/api/v2/gender')
+            const data = await response.json()
+            setGenders(data.results.map((gender: any) => gender.name))
+        } catch (error) {
+            console.error('Error fetching genders:', error)
+        }
+    }
+
+    const fetchNatures = async () => {
+        try {
+            const response = await fetch('https://localhost:7010/Nature');
+            const data = await response.json();
+            const detailedNatures = await Promise.all(
+                data.map((natureResponse: Nature) => ({
+                    name: natureResponse.name,
+                    up: natureResponse.up,
+                    down: natureResponse.down,
+                }))
+            );
+            setNatures(detailedNatures);
+        } catch (error) {
+            console.error('Error fetching natures:', error);
+        }
+    };
+
+
+    const fetchItems = async () => {
+        try {
+            const response = await fetch('https://pokeapi.co/api/v2/item?limit=1000')
+            const data = await response.json()
+            setItems(data.results.map((item: any) => item.name))
+        } catch (error) {
+            console.error('Error fetching items:', error)
+        }
+    }
+
+    const getMaxPersonalId = (): number => {
+        const allPersonalIds = teams.flatMap(team => team.pokemons.map(pokemon => pokemon.personalId));
+        return allPersonalIds.length > 0 ? Math.max(...allPersonalIds) : 0;
+    };
+
+    const addPokemonToTeam = (pokemon: BasePokemon) => {
+        if (selectedTeam && selectedTeam.pokemons.length < 6) {
+            var newHighestPersonalId = getMaxPersonalId() + 1
+            const detailedPokemon: Pokemon = {
+                ...pokemon,
+                personalId: newHighestPersonalId,
+                nickname: pokemon.name,
+                level: 100,
+                gender: 'male',
+                item: '',
+                nature: natures[0],
+                ability: pokemon.abilities[0],
+                selectedMoves: [],
+                evs: {
+                    hp: 0,
+                    attack: 0,
+                    defense: 0,
+                    specialAttack: 0,
+                    specialDefense: 0,
+                    speed: 0
+                },
+                ivs: {
+                    hp: 31,
+                    attack: 31,
+                    defense: 31,
+                    specialAttack: 31,
+                    specialDefense: 31,
+                    speed: 31
+                }
+            }
+            setSelectedPokemon(detailedPokemon)
+            const newTeamPokemons = [...selectedTeam.pokemons, detailedPokemon]
+            _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
+            setView('detail')
+        }
+    }
+
+    const removePokemonFromTeam = (pokemonId: number) => {
+        if (selectedTeam) {
+            const newTeamPokemons = selectedTeam.pokemons.filter(p => p.personalId !== pokemonId)
+            _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
+        }
+    }
+
+    const updateSelectedPokemon = (updatedPokemon: Pokemon) => {
+        if (selectedTeam) {
+            setSelectedPokemon(updatedPokemon)
+            const newTeamPokemons = selectedTeam.pokemons.map(p => p.personalId === updatedPokemon.personalId ? updatedPokemon : p)
+            _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
+        }
+    }
+
+    const _setSelectedTeam = (team: Team) => {
+        setSelectedTeam(team)
+        const newTeams = teams.map(t => t.id === team.id ? team : t)
+        SetTeams(newTeams)
+        localStorage.setItem("teams", JSON.stringify(teams))
+    }
+
+    const addTeam = (team: Team) => {
+        SetTeams([...teams, team])
+        setSelectedTeam(team)
+        setView('list')
+        localStorage.setItem("teams", JSON.stringify(teams))
+    }
+
+    return (
+        <div>
+            {view === 'teamList' && (
+                <div className="w-full bg-zinc-200">
+                    <TeamList
+                        teams={teams}
+                        addTeam={addTeam}
+                        setSelectedTeam={_setSelectedTeam}
+                        setView={setView}
+                        loading={loading}
+                    />
+                </div>
+            )}
+            {view !== 'teamList' && (
+                <div className="flex flex-col xl:flex-row gap-4">
+                    <div className="w-full xl:w-3/5 space-y-4 m-4">
+                        {view === 'list' && selectedTeam && (
+                            <PokemonList
+                                pokemonList={pokemonList}
+                                addPokemonToTeam={addPokemonToTeam}
+                                setView={setView}
+                                loading={loading}
+                            />
+                        )}
+                        {view === 'detail' && selectedTeam && selectedPokemon && (
+                            <PokemonDetail
+                                pokemon={selectedPokemon}
+                                updatePokemon={updateSelectedPokemon}
+                                removePokemonFromTeam={removePokemonFromTeam}
+                                setSelectedPokemon={setSelectedPokemon}
+                                setView={setView}
+                                genders={genders}
+                                natures={natures}
+                                items={items}
+                            />
+                        )}
+                        {view === 'team' && selectedTeam && (
+                            <TeamOverview
+                                team={selectedTeam}
+                                setSelectedTeam={_setSelectedTeam}
+                                updatePokemon={updateSelectedPokemon}
+                                removePokemonFromTeam={removePokemonFromTeam}
+                                setSelectedPokemon={setSelectedPokemon}
+                                setView={setView}
+                                genders={genders}
+                                items={items}
+                            />
+                        )}
+                    </div>
+                    <div className="w-full xl:w-2/5 bg-zinc-400 space-y-4">
+                        <TeamAnalysis />
+                    </div>
+                </div>
+            )}
+
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    )
 }
