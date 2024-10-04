@@ -1,0 +1,55 @@
+name: CI/CD for PokemonTeambuilder .NET Backend
+
+# Trigger the workflow on push or pull request
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Define the jobs to run
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Define the steps for the build job
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up .NET Core
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Build the .NET application
+      - name: Build application
+        run: dotnet build --configuration Release
+
+      # Run tests
+      - name: Run tests
+        run: dotnet test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Deploy job runs only after build job succeeds
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Deploy to Azure Web App (or any other service)
+      - name: Deploy to Azure Web App
+        uses: Azure/webapps-deploy@v2
+        with:
+          app-name: PokemonTeambuilder
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./bin/Release/net8.0/publish
