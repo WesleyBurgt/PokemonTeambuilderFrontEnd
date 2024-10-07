@@ -1,41 +1,23 @@
 import React from 'react'
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent } from "@/components/ui/card"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { Card } from "@/components/ui/card"
+import TypingGrid from './teamWeakness'
+import { Team, Typing } from '@/app/types';
 
-export default function TeamAnalysis() {
+interface TeamAnalysisProps {
+    team: Team
+    typings: Typing[]
+}
+
+export default function TeamAnalysis({ team, typings }: TeamAnalysisProps) {
     return (
         <div className="space-y-4 m-4">
             <h2 className="text-2xl font-bold">Team Analysis</h2>
-            <Tabs defaultValue="weaknesses">
-                <TabsList>
-                    <TabsTrigger value="weaknesses">Team Weaknesses</TabsTrigger>
-                    <TabsTrigger value="coverage">Move Coverage</TabsTrigger>
-                </TabsList>
-                <TabsContent value="weaknesses">
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={[]}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="type" />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar dataKey="effectiveness" fill="#8884d8" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </TabsContent>
-                <TabsContent value="coverage">
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={[]}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="type" />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar dataKey="count" fill="#82ca9d" />
-                        </BarChart>
-                    </ResponsiveContainer>
-                </TabsContent>
-            </Tabs>
+            <div className="m-2">
+                <TypingGrid
+                    team={team}
+                    typings={typings}
+                />
+            </div>
             <Card className="space-y-2 m-2">
                 <h3 className="font-bold">Team Building Checklist</h3>
                 <div className="flex flex-wrap">

@@ -22,6 +22,39 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.typing-grid {
+  background-color: #282c34;
+  border-collapse: collapse;
+  color: white;
+  width: 100%;
+  text-align: center;
+}
+
+.typing-grid th, .typing-grid td {
+  border: 1px solid #444;
+  padding: 2px;
+}
+
+.typing-grid th {
+  background-color: #333;
+}
+
+.typing-grid .weakness {
+  color: red;
+  font-weight: bold;
+}
+
+.typing-grid .resistance {
+  color: green;
+  font-weight: bold;
+}
+
+.typing-grid .immune {
+  color: gray;
+  font-weight: bold;
+}
+
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

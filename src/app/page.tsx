@@ -7,8 +7,7 @@ import PokemonList from '@/components/pokemonList'
 import PokemonDetail from '@/components/pokemonStatTab'
 import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
-import { Nature, Pokemon, BasePokemon, Team } from './types'
-import { setDefaultAutoSelectFamilyAttemptTimeout } from 'net'
+import { Nature, Pokemon, BasePokemon, Team, Typing } from './types'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
@@ -20,6 +19,7 @@ export default function PokemonTeamBuilder() {
     const [loading, setLoading] = useState(false)
     const [genders, setGenders] = useState<string[]>([])
     const [natures, setNatures] = useState<Nature[]>([])
+    const [typings, setTypings] = useState<Typing[]>([])
     const [items, setItems] = useState<string[]>([])
 
     const [offset, setOffset] = useState<number>(0);
@@ -28,6 +28,7 @@ export default function PokemonTeamBuilder() {
     useEffect(() => {
         fetchGenders();
         fetchNatures();
+        fetchTypings();
         fetchItems();
         fetchPokemonList(offset);
         SetTeams(getTeamsFromLocalStorage)
@@ -35,7 +36,7 @@ export default function PokemonTeamBuilder() {
 
     const getTeamsFromLocalStorage = (): Team[] => {
         const storedTeams = localStorage.getItem("teams");
-        
+
         if (storedTeams) {
             try {
                 return JSON.parse(storedTeams) as Team[];
@@ -103,6 +104,53 @@ export default function PokemonTeamBuilder() {
         }
     };
 
+    const fetchTypings = async () => {
+        try {
+            const response = await fetch('https://pokeapi.co/api/v2/type');
+            const data = await response.json();
+
+            const typeUrls = data.results.map((type: any) => type.url);
+
+            const typings = await Promise.all(
+                typeUrls.map(async (url: string) => {
+                    const typeResponse = await fetch(url);
+                    const typeData = await typeResponse.json();
+
+                    const typing: Typing = {
+                        id: typeData.id,
+                        name: typeData.name,
+                        weaknesses: typeData.damage_relations.double_damage_from.map((type: any) => ({
+                            id: type.id,
+                            name: type.name,
+                            weaknesses: [],
+                            resistances: [],
+                            immunities: []
+                        })),
+                        resistances: typeData.damage_relations.half_damage_from.map((type: any) => ({
+                            id: type.id,
+                            name: type.name,
+                            weaknesses: [],
+                            resistances: [],
+                            immunities: []
+                        })),
+                        immunities: typeData.damage_relations.no_damage_from.map((type: any) => ({
+                            id: type.id,
+                            name: type.name,
+                            weaknesses: [],
+                            resistances: [],
+                            immunities: []
+                        }))
+                    };
+
+                    return typing;
+                })
+            );
+
+            setTypings(typings);
+        } catch (error) {
+            console.error('Error fetching types:', error);
+        }
+    };
 
     const fetchItems = async () => {
         try {
@@ -160,6 +208,7 @@ export default function PokemonTeamBuilder() {
         if (selectedTeam) {
             const newTeamPokemons = selectedTeam.pokemons.filter(p => p.personalId !== pokemonId)
             _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
+            setView('team')
         }
     }
 
@@ -234,9 +283,14 @@ export default function PokemonTeamBuilder() {
                             />
                         )}
                     </div>
-                    <div className="w-full xl:w-2/5 bg-zinc-400 space-y-4">
-                        <TeamAnalysis />
-                    </div>
+                    {selectedTeam && typings && (
+                        <div className="w-full xl:w-2/5 bg-zinc-400 space-y-4">
+                            <TeamAnalysis
+                                team={selectedTeam}
+                                typings={typings}
+                            />
+                        </div>
+                    )}
                 </div>
             )}
 
