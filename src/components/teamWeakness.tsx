@@ -47,7 +47,7 @@ export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
             <th>Move</th>
             {team.pokemons.map(pokemon => (
               <th key={`header-${pokemon.personalId}`}>
-                <img src={pokemon.sprite} alt={pokemon.name} className="w-20 h-20 min-w-20 min-h-20" />
+                <img src={pokemon.sprite} alt={pokemon.name} className="w-full min-w-20 h-20 object-contain" />
               </th>
             ))}
             <th>Total Weak</th>
