@@ -10,7 +10,6 @@ import { Nature, Pokemon, BasePokemon, Team, baseInterface } from './types'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
-
     const [teams, SetTeams] = useState<Team[]>([])
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
     const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null)
@@ -234,8 +233,8 @@ export default function PokemonTeamBuilder() {
                 </div>
             )}
             {view !== 'teamList' && (
-                <div className="flex flex-col xl:flex-row gap-4">
-                    <div className="w-full xl:w-3/5 space-y-4 m-4">
+                <div className="flex flex-col h-dvh xl:flex-row gap-4">
+                    <div className="left-tab xl:w-3/5 space-y-4 m-4">
                         {view === 'list' && selectedTeam && (
                             <PokemonList
                                 pokemonList={pokemonList}

@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Team } from '@/app/types';
+import { ScrollArea } from './ui/scroll-area';
 
 interface TeamListProps {
     teams: Team[];
@@ -41,7 +42,7 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView, loa
 
     return (
         <div>
-            <div className="relative mb-4 border border-black">
+            <div className="relative border border-black">
                 <Input
                     type="text"
                     placeholder="Search Teams"
@@ -51,7 +52,8 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView, loa
                 />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
-            <div className="flex flex-wrap font-bold m-10">
+            <ScrollArea className="scroll-area-teams">
+            <div className="flex flex-wrap font-bold">
                 {loading ? (
                     <div>Loading teams...</div>
                 ) : (
@@ -72,8 +74,9 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView, loa
                     ))
                 )}
             </div>
+            </ScrollArea>
             <Button
-                className="ml-20 mb-20"
+                className="ml-10 mt-5 mb-10"
                 onClick={() => {
                     const team: Team = {
                         id: teams.length + 1,

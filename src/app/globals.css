@@ -54,6 +54,21 @@ body {
   font-weight: bold;
 }
 
+.left-tab {
+  width: calc(100% - 2rem);
+}
+
+.scroll-area {
+  height: calc(100dvh - 5rem);
+}
+
+.scroll-area-teams {
+  height: calc(100dvh - 9rem);
+}
+
+.scroll-area-tab {
+  height: calc(100dvh - 32rem);
+}
 
 @layer utilities {
   .text-balance {

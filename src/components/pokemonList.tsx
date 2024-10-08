@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
 import { BasePokemon } from '@/app/types';
+import { ScrollArea } from './ui/scroll-area';
 
 interface PokemonListProps {
     pokemonList: BasePokemon[];
@@ -75,7 +76,7 @@ export default function PokemonList({ pokemonList, addPokemonToTeam, setView, lo
                 />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
-            <div className="h-[600px] overflow-y-auto border rounded-md">
+            <ScrollArea className="scroll-area-teams border pr-2 rounded-md">
                 {loading ? (
                     <div className="flex justify-center items-center h-full">
                         <p>Loading Pokémon...</p>
@@ -133,7 +134,7 @@ export default function PokemonList({ pokemonList, addPokemonToTeam, setView, lo
                         </tbody>
                     </table>
                 )}
-            </div>
+            </ScrollArea>
         </div>
     );
 }

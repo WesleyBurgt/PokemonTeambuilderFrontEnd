@@ -2,6 +2,7 @@ import React from 'react'
 import { Card } from "@/components/ui/card"
 import TypingGrid from './teamWeakness'
 import { baseInterface, Team } from '@/app/types';
+import { ScrollArea } from './ui/scroll-area';
 
 interface TeamAnalysisProps {
     team: Team
@@ -10,7 +11,7 @@ interface TeamAnalysisProps {
 
 export default function TeamAnalysis({ team, typings }: TeamAnalysisProps) {
     return (
-        <div className="space-y-4 m-4">
+        <ScrollArea className="space-y-4 m-4 scroll-area">
             <h2 className="text-2xl font-bold">Team Analysis</h2>
             <div className="m-2">
                 <TypingGrid
@@ -55,6 +56,6 @@ export default function TeamAnalysis({ team, typings }: TeamAnalysisProps) {
                     </Card>
                 </div>
             </Card>
-        </div>
+        </ScrollArea>
     )
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Team, Pokemon, baseInterface } from '@/app/types';
+import { ScrollArea, ScrollBar } from './ui/scroll-area';
 
 interface TeamWeaknessProps {
   team: Team
@@ -40,7 +41,7 @@ export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
   const filteredTypings = typings.filter(typing => typing.name !== 'stellar' && typing.name !== 'unknown');
 
   return (
-    <div className="typing-grid overflow-auto">
+    <ScrollArea className="typing-grid pb-2">
       <table className="min-w-full table-auto border-collapse">
         <thead>
           <tr>
@@ -103,7 +104,8 @@ export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
           ))}
         </tbody>
       </table>
-    </div>
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
   );
 
 };

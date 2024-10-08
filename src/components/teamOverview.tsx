@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import PokemonComponent from '@/components/pokemonComponent'
 import { ChevronLeft } from 'lucide-react'
 import { Pokemon, Team } from '@/app//types'
+import { ScrollArea } from './ui/scroll-area'
 
 interface TeamOverviewProps {
     team: Team
@@ -19,7 +20,7 @@ interface TeamOverviewProps {
 export default function TeamOverview({ team, setSelectedTeam, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setView, genders, items }: TeamOverviewProps) {
     return (
         <div>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-3">
                 <div className="flex">
                     <Button onClick={() => setView('teamList')}><ChevronLeft className="mr-2" />Team list</Button>
                     <Input
@@ -31,7 +32,7 @@ export default function TeamOverview({ team, setSelectedTeam, updatePokemon, rem
                 </div>
                 <Button onClick={() => setView('list')}>Add Pokémon</Button>
             </div>
-            <div className="space-y-4">
+            <ScrollArea className="scroll-area pr-2 space-y-4">
                 {team.pokemons.map((pokemon) => (
                     <PokemonComponent
                         key={pokemon.personalId}
@@ -44,7 +45,7 @@ export default function TeamOverview({ team, setSelectedTeam, updatePokemon, rem
                         items={items}
                     />
                 ))}
-            </div>
+            </ScrollArea>
         </div>
     )
 }
