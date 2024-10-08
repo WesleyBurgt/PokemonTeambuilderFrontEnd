@@ -1,11 +1,11 @@
 import React from 'react'
 import { Card } from "@/components/ui/card"
 import TypingGrid from './teamWeakness'
-import { Team, Typing } from '@/app/types';
+import { baseInterface, Team } from '@/app/types';
 
 interface TeamAnalysisProps {
     team: Team
-    typings: Typing[]
+    typings: baseInterface[]
 }
 
 export default function TeamAnalysis({ team, typings }: TeamAnalysisProps) {

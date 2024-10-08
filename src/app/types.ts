@@ -8,6 +8,11 @@ export interface BasePokemon {
     sprite: string;
 }
 
+export interface baseInterface {
+    id: number;
+    name: string;
+}
+
 export interface Typing {
     id: number;
     name: string;

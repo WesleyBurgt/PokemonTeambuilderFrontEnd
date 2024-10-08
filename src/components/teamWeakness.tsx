@@ -1,9 +1,9 @@
 import React from 'react';
-import { Team, Pokemon, Typing } from '@/app/types';
+import { Team, Pokemon, baseInterface } from '@/app/types';
 
 interface TeamWeaknessProps {
   team: Team
-  typings: Typing[]
+  typings: baseInterface[]
 }
 
 const typeColors: { [key: string]: string } = {
@@ -14,7 +14,7 @@ const typeColors: { [key: string]: string } = {
 };
 
 export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
-  const getEffectiveness = (pokemon: Pokemon, typing: Typing): string => {
+  const getEffectiveness = (pokemon: Pokemon, typing: baseInterface): string => {
     let effectiveness = 1;
 
     pokemon.typings.forEach(pokemonTyping => {

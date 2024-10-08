@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
@@ -27,7 +27,7 @@ export default function PokemonList({ pokemonList, addPokemonToTeam, setView, lo
         const filteredList = pokemonList.filter(pokemon =>
             pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
-    
+
         if (sortConfig) {
             const { key, direction } = sortConfig;
             filteredList.sort((a, b) => {
@@ -36,7 +36,7 @@ export default function PokemonList({ pokemonList, addPokemonToTeam, setView, lo
                 return direction === 'desc' ? bValue - aValue : aValue - bValue;
             });
         }
-    
+
         setFilteredPokemonList(filteredList);
     }, [searchTerm, pokemonList, sortConfig]);
 

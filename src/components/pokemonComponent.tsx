@@ -1,14 +1,11 @@
 import React from 'react'
-import { useMemo } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
     Select,
     SelectContent,
-    SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
@@ -73,7 +70,7 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
 }
 
 export default function pokemonComponent({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setView, genders, items }: ComponentProps) {
-    const derivedStats = useMemo(() => calculateDerivedStats(pokemon), [pokemon.evs,pokemon.ivs,pokemon.nature,pokemon.baseStats]);
+    const derivedStats = calculateDerivedStats(pokemon)
     return (
         <Card key={pokemon.personalId} className="p-4">
             <div className="flex justify-end mb-2">
