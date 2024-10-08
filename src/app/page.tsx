@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
 import TeamOverview from '@/components/teamOverview'
 import PokemonList from '@/components/pokemonList'
 import PokemonDetail from '@/components/pokemonStatTab'
