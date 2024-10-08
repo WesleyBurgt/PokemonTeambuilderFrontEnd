@@ -31,7 +31,7 @@ export default function PokemonTeamBuilder() {
         fetchItems();
         fetchPokemonList(offset);
         SetTeams(getTeamsFromLocalStorage)
-    });
+    }, []);
 
     const getTeamsFromLocalStorage = (): Team[] => {
         const storedTeams = localStorage.getItem("teams");
