@@ -12,10 +12,9 @@ interface TeamListProps {
     addTeam: (team: Team) => void;
     setSelectedTeam: (team: Team) => void;
     setView: (view: 'list' | 'detail' | 'team' | 'teamList') => void;
-    loading: boolean;
 }
 
-export default function TeamList({ teams, addTeam, setSelectedTeam, setView, loading }: TeamListProps) {
+export default function TeamList({ teams, addTeam, setSelectedTeam, setView }: TeamListProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredTeams, setFilteredTeams] = useState<Team[]>(teams);
 
@@ -53,10 +52,7 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView, loa
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
             <ScrollArea className="scroll-area-teams">
-            <div className="flex flex-wrap font-bold">
-                {loading ? (
-                    <div>Loading teams...</div>
-                ) : (
+                <div className="flex flex-wrap font-bold">{
                     filteredTeams.map((team) => (
                         <Card key={team.id} className="p-4 m-10 w-96" onClick={() => {
                             setSelectedTeam(team);
@@ -72,8 +68,8 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView, loa
                             </div>
                         </Card>
                     ))
-                )}
-            </div>
+                }
+                </div>
             </ScrollArea>
             <Button
                 className="ml-10 mt-5 mb-10"

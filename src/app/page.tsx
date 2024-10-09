@@ -14,21 +14,18 @@ export default function PokemonTeamBuilder() {
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
     const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null)
     const [view, setView] = useState<'list' | 'detail' | 'team' | 'teamList'>('teamList')
-    const [loading, setLoading] = useState(false)
     const [genders, setGenders] = useState<string[]>([])
     const [natures, setNatures] = useState<Nature[]>([])
     const [typings, setTypings] = useState<baseInterface[]>([])
     const [items, setItems] = useState<string[]>([])
-
-    const offset = 0;
-    const pokemonFetchLimit = 1400;
+    const [offset, setOffset] = useState<number>(0);
+    const pokemonFetchLimit = 10;
 
     useEffect(() => {
         fetchGenders();
         fetchNatures();
         fetchTypings();
         fetchItems();
-        fetchPokemonList(offset);
         SetTeams(getTeamsFromLocalStorage)
     }, []);
 
@@ -46,9 +43,16 @@ export default function PokemonTeamBuilder() {
         return [];
     };
 
+    const loadMorePokemon = () => {
+        setOffset(offset + pokemonFetchLimit)
+    }
+
+    useEffect(() => {
+        fetchPokemonList(offset); // Fetch Pokémon whenever the offset changes
+    }, [offset]);
+
     const fetchPokemonList = async (offset: number) => {
         try {
-            setLoading(true)
             const response = await fetch(`https://localhost:7010/Pokemon?offset=${offset}&limit=${pokemonFetchLimit}`)
             const data = await response.json()
             const detailedPokemonList = await Promise.all(
@@ -68,10 +72,9 @@ export default function PokemonTeamBuilder() {
 
             setPokemonList(prevList => [...prevList, ...newPokemonList])
             console.log("offset: " + offset)
-            setLoading(false)
+            loadMorePokemon();
         } catch (error) {
             console.error('Error fetching Pokemon list:', error)
-            setLoading(false)
         }
     }
 
@@ -228,7 +231,6 @@ export default function PokemonTeamBuilder() {
                         addTeam={addTeam}
                         setSelectedTeam={_setSelectedTeam}
                         setView={setView}
-                        loading={loading}
                     />
                 </div>
             )}
@@ -240,7 +242,6 @@ export default function PokemonTeamBuilder() {
                                 pokemonList={pokemonList}
                                 addPokemonToTeam={addPokemonToTeam}
                                 setView={setView}
-                                loading={loading}
                             />
                         )}
                         {view === 'detail' && selectedTeam && selectedPokemon && (
