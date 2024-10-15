@@ -38,8 +38,6 @@ export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
     return '';
   };
 
-  const filteredTypings = typings.filter(typing => typing.name !== 'stellar' && typing.name !== 'unknown');
-
   return (
     <ScrollArea className="typing-grid pb-2">
       <table className="min-w-full table-auto border-collapse">
@@ -57,7 +55,7 @@ export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
           </tr>
         </thead>
         <tbody>
-          {filteredTypings.map(typing => (
+          {typings.map(typing => (
             <tr key={`typing-${typing.id}`}>
               <td className="px-2 py-1" style={{ backgroundColor: typeColors[typing.name], color: 'white' }}>
                 <span>{typing.name.toUpperCase()}</span>

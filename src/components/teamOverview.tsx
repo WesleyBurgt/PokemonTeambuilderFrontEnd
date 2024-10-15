@@ -32,19 +32,21 @@ export default function TeamOverview({ team, setSelectedTeam, updatePokemon, rem
                 </div>
                 <Button onClick={() => setView('list')}>Add Pokémon</Button>
             </div>
-            <ScrollArea className="scroll-area pr-2 space-y-4">
-                {team.pokemons.map((pokemon) => (
-                    <PokemonComponent
-                        key={pokemon.personalId}
-                        pokemon={pokemon}
-                        updatePokemon={updatePokemon}
-                        removePokemonFromTeam={removePokemonFromTeam}
-                        setSelectedPokemon={setSelectedPokemon}
-                        setView={setView}
-                        genders={genders}
-                        items={items}
-                    />
-                ))}
+            <ScrollArea className="scroll-area pr-2">
+                <div className="grid gap-y-4">
+                    {team.pokemons.map((pokemon) => (
+                        <PokemonComponent
+                            key={pokemon.personalId}
+                            pokemon={pokemon}
+                            updatePokemon={updatePokemon}
+                            removePokemonFromTeam={removePokemonFromTeam}
+                            setSelectedPokemon={setSelectedPokemon}
+                            setView={setView}
+                            genders={genders}
+                            items={items}
+                        />
+                    ))}
+                </div>
             </ScrollArea>
         </div>
     )
