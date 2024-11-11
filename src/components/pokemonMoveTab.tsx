@@ -6,7 +6,7 @@ import { ChevronLeft, Search } from 'lucide-react'
 import { Item, Move, Pokemon } from '@/app//types'
 import { ScrollArea } from './ui/scroll-area'
 import { Input } from '@/components/ui/input'
-import { typeColors } from '@/app/typeColors'
+import PokemonTypingComponent from './pokemonTyping'
 
 interface PokemonMoveTabProps {
     pokemon: Pokemon
@@ -90,13 +90,10 @@ export default function PokemonMoveTab({ pokemon, updatePokemon, removePokemonFr
                                                 <td className="p-2">
                                                     <div className="flex justify-center">
                                                         {move.typing && (
-                                                            <span
-                                                                key={`moveTyping-${move.typing.id}`}
-                                                                className="px-2 py-1 rounded-full text-xs font-semibold"
-                                                                style={{ backgroundColor: typeColors[move.typing.name], color: 'white' }}
-                                                            >
-                                                                {move.typing.name}
-                                                            </span>)}
+                                                            <PokemonTypingComponent
+                                                                typing={move.typing}
+                                                            />
+                                                        )}
                                                     </div>
                                                 </td>
                                                 <td className="p-2">

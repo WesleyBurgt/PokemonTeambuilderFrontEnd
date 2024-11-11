@@ -1,7 +1,7 @@
 import React from 'react';
 import { Team, Pokemon, Typing } from '@/app/types';
 import { ScrollArea, ScrollBar } from './ui/scroll-area';
-import { typeColors } from '@/app/typeColors';
+import { typingColors } from './pokemonTyping';
 
 interface TeamWeaknessProps {
     team: Team
@@ -51,7 +51,7 @@ export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
                 <tbody>
                     {typings.map(typing => (
                         <tr key={`typing-${typing.id}`}>
-                            <td className="px-2 py-1" style={{ backgroundColor: typeColors[typing.name], color: 'white' }}>
+                            <td className="px-2 py-1" style={{ backgroundColor: typingColors[typing.name], color: 'white' }}>
                                 <span>{typing.name.toUpperCase()}</span>
                             </td>
                             {team.pokemons.map(pokemon => (

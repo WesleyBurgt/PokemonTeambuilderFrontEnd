@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Search } from 'lucide-react';
 import { BasePokemon } from '@/app/types';
 import { ScrollArea } from './ui/scroll-area';
-import { typeColors } from '@/app/typeColors';
+import PokemonTypingComponent from './pokemonTyping';
 
 interface PokemonListProps {
     pokemonList: BasePokemon[];
@@ -98,13 +98,11 @@ export default function PokemonList({ pokemonList, addPokemonToTeam, setView }: 
                                 </td>
                                 <td className="p-2">
                                     {pokemon.typings.map(typing => (
-                                        <span
-                                            key={typing.name}
-                                            className="inline-block px-2 py-1 rounded-full text-xs font-semibold mr-1"
-                                            style={{ backgroundColor: typeColors[typing.name], color: 'white' }}
-                                        >
-                                            {typing.name}
-                                        </span>
+                                        <div key={typing.name}>
+                                            <PokemonTypingComponent
+                                                typing={typing}
+                                            />
+                                        </div>
                                     ))}
                                 </td>
                                 <td className="p-2">{pokemon.abilities.map(ability => ability.name).join(', ')}</td>

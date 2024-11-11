@@ -12,7 +12,7 @@ import {
 import { Card } from "@/components/ui/card"
 import { Copy, Download, ArrowUpDown, Trash2 } from 'lucide-react'
 import { Pokemon } from '@/app//types'
-import { typeColors } from '@/app/typeColors'
+import PokemonTypingComponent from './pokemonTyping'
 
 interface ComponentProps {
     pokemon: Pokemon
@@ -89,14 +89,12 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                                 className="text-lg font-bold mb-2"
                             />
                             <div className="flex space-x-2">
-                                {pokemon.typings.map(typings => (
-                                    <span
-                                        key={typings.name}
-                                        className="px-2 py-1 rounded-full text-xs font-semibold"
-                                        style={{ backgroundColor: typeColors[typings.name], color: 'white' }}
-                                    >
-                                        {typings.name}
-                                    </span>
+                                {pokemon.typings.map(typing => (
+                                    <div key={typing.name}>
+                                        <PokemonTypingComponent
+                                            typing={typing}
+                                        />
+                                    </div>
                                 ))}
                             </div>
                         </div>
