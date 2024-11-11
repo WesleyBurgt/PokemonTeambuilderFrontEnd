@@ -12,13 +12,14 @@ interface PokemonItemTabProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'team' | 'teamList') => void
+    setSelectedMoveSlot: (moveslot: number) => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
     natures: Nature[]
     items: Item[]
 }
 
-export default function PokemonItemTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setView, genders, natures, items }: PokemonItemTabProps) {
+export default function PokemonItemTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, natures, items }: PokemonItemTabProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredItemList, setFilteredItemList] = useState<Item[]>(items);
 
@@ -41,6 +42,7 @@ export default function PokemonItemTab({ pokemon, updatePokemon, removePokemonFr
                 updatePokemon={updatePokemon}
                 removePokemonFromTeam={removePokemonFromTeam}
                 setSelectedPokemon={setSelectedPokemon}
+                setSelectedMoveSlot={setSelectedMoveSlot}
                 setView={setView}
                 genders={genders}
                 items={items}

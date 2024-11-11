@@ -20,7 +20,8 @@ interface PokemonStatTabProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'team' | 'teamList') => void
+    setSelectedMoveSlot: (moveslot: number) => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
     natures: Nature[]
     items: Item[]
@@ -56,7 +57,7 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
     return derivedStats;
 }
 
-export default function PokemonStatTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setView, genders, natures, items }: PokemonStatTabProps) {
+export default function PokemonStatTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, natures, items }: PokemonStatTabProps) {
     const derivedStats = calculateDerivedStats(pokemon);
     return (
         <div>
@@ -69,6 +70,7 @@ export default function PokemonStatTab({ pokemon, updatePokemon, removePokemonFr
                 updatePokemon={updatePokemon}
                 removePokemonFromTeam={removePokemonFromTeam}
                 setSelectedPokemon={setSelectedPokemon}
+                setSelectedMoveSlot={setSelectedMoveSlot}
                 setView={setView}
                 genders={genders}
                 items={items}

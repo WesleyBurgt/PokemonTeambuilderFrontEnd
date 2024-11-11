@@ -44,8 +44,10 @@ export interface Move {
     name: string;
     description: string | null;
     typing: Typing;
-    basePower: number;
-    accuracy: number;
+    category: string;
+    basePower: number | null;
+    accuracy: number | null;
+    pp: number | null;
 }
 
 export interface Pokemon extends BasePokemon {
@@ -56,7 +58,7 @@ export interface Pokemon extends BasePokemon {
     item: Item | null
     nature: Nature
     ability: Ability
-    selectedMoves: Move[]
+    selectedMoves: (Move | null)[]
     evs: Stats
     ivs: Stats
 }

@@ -9,13 +9,15 @@ import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonItemTab from '@/components/pokemonItemTab'
 import PokemonAbilityTab from '@/components/pokemonAbilityTab'
+import PokemonMoveTab from '@/components/pokemonMoveTab'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
     const [teams, SetTeams] = useState<Team[]>([])
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
     const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null)
-    const [view, setView] = useState<'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'team' | 'teamList'>('teamList')
+    const [selectedMoveSlot, SetSelectedMoveSlot] = useState<number | null>(null)
+    const [view, setView] = useState<'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList'>('teamList')
     const [genders, setGenders] = useState<string[]>([])
     const [natures, setNatures] = useState<Nature[]>([])
     const [typings, setTypings] = useState<Typing[]>([])
@@ -79,7 +81,7 @@ export default function PokemonTeamBuilder() {
 
             setPokemonList(prevList => [...prevList, ...newPokemonList])
             console.log("offset: " + offset)
-            
+
             if (pokemonCount > offset + pokemonFetchLimit){
                 loadMorePokemon();
             }
@@ -181,7 +183,7 @@ export default function PokemonTeamBuilder() {
                 item: null,
                 nature: natures[0],
                 ability: pokemon.abilities[0],
-                selectedMoves: [],
+                selectedMoves: [null, null, null, null],
                 evs: {
                     hp: 0,
                     attack: 0,
@@ -264,6 +266,7 @@ export default function PokemonTeamBuilder() {
                                 updatePokemon={updateSelectedPokemon}
                                 removePokemonFromTeam={removePokemonFromTeam}
                                 setSelectedPokemon={setSelectedPokemon}
+                                setSelectedMoveSlot={SetSelectedMoveSlot}
                                 setView={setView}
                                 genders={genders}
                                 natures={natures}
@@ -276,6 +279,7 @@ export default function PokemonTeamBuilder() {
                                 updatePokemon={updateSelectedPokemon}
                                 removePokemonFromTeam={removePokemonFromTeam}
                                 setSelectedPokemon={setSelectedPokemon}
+                                setSelectedMoveSlot={SetSelectedMoveSlot}
                                 setView={setView}
                                 genders={genders}
                                 natures={natures}
@@ -288,10 +292,24 @@ export default function PokemonTeamBuilder() {
                                 updatePokemon={updateSelectedPokemon}
                                 removePokemonFromTeam={removePokemonFromTeam}
                                 setSelectedPokemon={setSelectedPokemon}
+                                setSelectedMoveSlot={SetSelectedMoveSlot}
                                 setView={setView}
                                 genders={genders}
                                 natures={natures}
                                 items={items}
+                            />
+                        )}
+                        {view === 'moveTab' && selectedTeam && selectedPokemon && selectedMoveSlot != null && (
+                            <PokemonMoveTab
+                                pokemon={selectedPokemon}
+                                updatePokemon={updateSelectedPokemon}
+                                removePokemonFromTeam={removePokemonFromTeam}
+                                setSelectedPokemon={setSelectedPokemon}
+                                setSelectedMoveSlot={SetSelectedMoveSlot}
+                                setView={setView}
+                                genders={genders}
+                                items={items}
+                                moveSlotIndex={selectedMoveSlot}
                             />
                         )}
                         {view === 'team' && selectedTeam && (
@@ -301,6 +319,7 @@ export default function PokemonTeamBuilder() {
                                 updatePokemon={updateSelectedPokemon}
                                 removePokemonFromTeam={removePokemonFromTeam}
                                 setSelectedPokemon={setSelectedPokemon}
+                                setSelectedMoveSlot={SetSelectedMoveSlot}
                                 setView={setView}
                                 genders={genders}
                                 items={items}

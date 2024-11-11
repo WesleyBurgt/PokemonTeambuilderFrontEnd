@@ -18,7 +18,8 @@ interface ComponentProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'team' | 'teamList') => void
+    setSelectedMoveSlot: (moveslot: number) => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
     items: Item[]
 }
@@ -69,7 +70,7 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
     return derivedStats;
 }
 
-export default function pokemonComponent({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setView, genders, items }: ComponentProps) {
+export default function pokemonComponent({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, items }: ComponentProps) {
     const derivedStats = calculateDerivedStats(pokemon)
     return (
         <Card key={pokemon.personalId} className="p-4">
@@ -168,26 +169,13 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                     <div className="mt-2">
                         <Label>Moves</Label>
                         {[0, 1, 2, 3].map((index) => (
-                            <Select key={index} value={pokemon.selectedMoves[index]?.name || ''} onValueChange={(value) => {
-                                const newMove = pokemon.moves.find(move => move.name == value)
-                                if (newMove) {
-                                    const newMoves = [...pokemon.selectedMoves]
-                                    newMoves[index] = newMove
-                                    const updatedPokemon = { ...pokemon, selectedMoves: newMoves }
-                                    updatePokemon(updatedPokemon);
-                                }
+                            <Button key={`moveSlot-${index}`} variant='outline' className='w-full justify-start my-2' onClick={() => {
+                                setSelectedPokemon(pokemon)
+                                setSelectedMoveSlot(index)
+                                setView('moveTab')
                             }}>
-                                <SelectTrigger id="move-select" className="mt-1">
-                                    <SelectValue placeholder={pokemon.selectedMoves[index]?.name || ''} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {pokemon.moves.map(move => (
-                                        <SelectItem key={move.id} value={move.name}>
-                                            {move.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                <div>{pokemon.selectedMoves[index]?.name}</div>
+                            </Button>
                         ))}
                     </div>
                 </div>

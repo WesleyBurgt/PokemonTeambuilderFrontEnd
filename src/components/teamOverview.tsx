@@ -12,12 +12,13 @@ interface TeamOverviewProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'team' | 'teamList') => void
+    setSelectedMoveSlot: (moveslot: number) => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
     items: Item[]
 }
 
-export default function TeamOverview({ team, setSelectedTeam, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setView, genders, items }: TeamOverviewProps) {
+export default function TeamOverview({ team, setSelectedTeam, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, items }: TeamOverviewProps) {
     return (
         <div>
             <div className="flex justify-between items-center mb-3">
@@ -41,6 +42,7 @@ export default function TeamOverview({ team, setSelectedTeam, updatePokemon, rem
                             updatePokemon={updatePokemon}
                             removePokemonFromTeam={removePokemonFromTeam}
                             setSelectedPokemon={setSelectedPokemon}
+                            setSelectedMoveSlot={setSelectedMoveSlot}
                             setView={setView}
                             genders={genders}
                             items={items}
