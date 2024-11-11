@@ -86,15 +86,11 @@ export default function PokemonTeamBuilder() {
         }
     }
 
-    interface Gender {
-        name: string;
-    }
-
     const fetchGenders = async () => {
         try {
             const response = await fetch(`${apiConnectionStringBase}/Gender/List`)
             const data = await response.json()
-            setGenders(data.results.map((gender: Gender) => gender.name))
+            setGenders(data.results.map((gender: String) => gender))
         } catch (error) {
             console.error('Error fetching genders:', error)
         }
@@ -179,7 +175,7 @@ export default function PokemonTeamBuilder() {
                 personalId: newHighestPersonalId,
                 nickname: pokemon.name,
                 level: 100,
-                gender: 'male',
+                gender: genders[0],
                 item: null,
                 nature: natures[0],
                 ability: pokemon.abilities[0],
