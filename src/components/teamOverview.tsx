@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import PokemonComponent from '@/components/pokemonComponent'
 import { ChevronLeft } from 'lucide-react'
-import { Pokemon, Team } from '@/app//types'
+import { Item, Pokemon, Team } from '@/app//types'
 import { ScrollArea } from './ui/scroll-area'
 
 interface TeamOverviewProps {
@@ -14,7 +14,7 @@ interface TeamOverviewProps {
     setSelectedPokemon: (pokemon: Pokemon) => void
     setView: (view: 'list' | 'detail' | 'team' | 'teamList') => void
     genders: string[]
-    items: string[]
+    items: Item[]
 }
 
 export default function TeamOverview({ team, setSelectedTeam, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setView, genders, items }: TeamOverviewProps) {

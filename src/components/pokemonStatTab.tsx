@@ -12,7 +12,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import PokemonComponent from '@/components/pokemonComponent'
 import { ChevronLeft } from 'lucide-react'
-import { Nature, Pokemon } from '@/app//types'
+import { Item, Nature, Pokemon } from '@/app//types'
 import { ScrollArea } from './ui/scroll-area'
 
 interface PokemonDetailProps {
@@ -23,7 +23,7 @@ interface PokemonDetailProps {
     setView: (view: 'list' | 'detail' | 'team') => void
     genders: string[]
     natures: Nature[]
-    items: string[]
+    items: Item[]
 }
 
 function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {

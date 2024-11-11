@@ -8,9 +8,11 @@ export interface BasePokemon {
     sprite: string;
 }
 
-export interface baseInterface {
+export interface Item {
     id: number;
     name: string;
+    description: string | null;
+    image: string | null;
 }
 
 export interface Typing {

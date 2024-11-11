@@ -6,7 +6,7 @@ import PokemonList from '@/components/pokemonList'
 import PokemonDetail from '@/components/pokemonStatTab'
 import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
-import { Nature, Pokemon, BasePokemon, Team, baseInterface } from './types'
+import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
@@ -16,10 +16,13 @@ export default function PokemonTeamBuilder() {
     const [view, setView] = useState<'list' | 'detail' | 'team' | 'teamList'>('teamList')
     const [genders, setGenders] = useState<string[]>([])
     const [natures, setNatures] = useState<Nature[]>([])
-    const [typings, setTypings] = useState<baseInterface[]>([])
-    const [items, setItems] = useState<string[]>([])
+    const [typings, setTypings] = useState<Typing[]>([])
+    const [items, setItems] = useState<Item[]>([])
     const [offset, setOffset] = useState<number>(0);
+    const [pokemonCount, setPokemonCount] = useState<number>(0);
     const pokemonFetchLimit = 10;
+
+    const apiConnectionStringBase = `https://localhost:7010/api`
 
     useEffect(() => {
         fetchGenders();
@@ -53,10 +56,10 @@ export default function PokemonTeamBuilder() {
 
     const fetchPokemonList = async (offset: number) => {
         try {
-            const response = await fetch(`https://localhost:7010/Pokemon?offset=${offset}&limit=${pokemonFetchLimit}`)
+            const response = await fetch(`${apiConnectionStringBase}/BasePokemon/List?offset=${offset}&limit=${pokemonFetchLimit}`)
             const data = await response.json()
             const detailedPokemonList = await Promise.all(
-                data.map((pokemon: BasePokemon) => ({
+                data.results.map((pokemon: BasePokemon) => ({
                     id: pokemon.id,
                     name: pokemon.name,
                     typings: pokemon.typings.map(typing => typing),
@@ -66,13 +69,17 @@ export default function PokemonTeamBuilder() {
                     sprite: pokemon.sprite
                 })));
 
+                setPokemonCount(data.count)
+
             const newPokemonList = detailedPokemonList.filter(pokemon =>
                 !pokemonList.some(existingPokemon => existingPokemon.id === pokemon.id)
             );
 
             setPokemonList(prevList => [...prevList, ...newPokemonList])
             console.log("offset: " + offset)
-            loadMorePokemon();
+            if (pokemonCount > offset + pokemonFetchLimit){
+                loadMorePokemon();
+            }
         } catch (error) {
             console.error('Error fetching Pokemon list:', error)
         }
@@ -84,7 +91,7 @@ export default function PokemonTeamBuilder() {
 
     const fetchGenders = async () => {
         try {
-            const response = await fetch('https://pokeapi.co/api/v2/gender')
+            const response = await fetch(`${apiConnectionStringBase}/Gender/List`)
             const data = await response.json()
             setGenders(data.results.map((gender: Gender) => gender.name))
         } catch (error) {
@@ -94,10 +101,10 @@ export default function PokemonTeamBuilder() {
 
     const fetchNatures = async () => {
         try {
-            const response = await fetch('https://localhost:7010/Nature');
+            const response = await fetch(`${apiConnectionStringBase}/Nature/List`);
             const data = await response.json();
             const detailedNatures = await Promise.all(
-                data.map((natureResponse: Nature) => ({
+                data.results.map((natureResponse: Nature) => ({
                     name: natureResponse.name,
                     up: natureResponse.up,
                     down: natureResponse.down,
@@ -109,25 +116,19 @@ export default function PokemonTeamBuilder() {
         }
     };
 
-    interface baseData extends baseInterface{
-        url: string
-    }
-
     const fetchTypings = async () => {
         try {
-            const response = await fetch('https://pokeapi.co/api/v2/type');
+            const response = await fetch(`${apiConnectionStringBase}/Typing/List`);
             const data = await response.json();
 
-            const typeUrls = data.results.map((type: baseData) => type.url);
-
             const typings = await Promise.all(
-                typeUrls.map(async (url: string) => {
-                    const typeResponse = await fetch(url);
-                    const typeData = await typeResponse.json();
-
-                    const typing: baseInterface = {
-                        id: typeData.id,
-                        name: typeData.name,
+                data.results.map((typingResponse: Typing) => {
+                    const typing: Typing = {
+                        id: typingResponse.id,
+                        name: typingResponse.name,
+                        weaknesses: typingResponse.weaknesses,
+                        resistances: typingResponse.resistances,
+                        immunities: typingResponse.immunities
                     };
 
                     return typing;
@@ -142,13 +143,27 @@ export default function PokemonTeamBuilder() {
 
     const fetchItems = async () => {
         try {
-            const response = await fetch('https://pokeapi.co/api/v2/item?limit=1000')
+            const response = await fetch(`${apiConnectionStringBase}/Item/List`)
             const data = await response.json()
-            setItems(data.results.map((item: baseInterface) => item.name))
+
+            const items = await Promise.all(
+                data.results.map((itemResponse: Item) => {
+                    const item: Item = {
+                        id: itemResponse.id,
+                        name: itemResponse.name,
+                        description: itemResponse.description,
+                        image: itemResponse.image
+                    };
+
+                    return item;
+                })
+            );
+
+            setItems(items);
         } catch (error) {
             console.error('Error fetching items:', error)
         }
-    }
+    };
 
     const getMaxPersonalId = (): number => {
         const allPersonalIds = teams.flatMap(team => team.pokemons.map(pokemon => pokemon.personalId));

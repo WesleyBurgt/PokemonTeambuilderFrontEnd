@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select"
 import { Card } from "@/components/ui/card"
 import { Copy, Download, ArrowUpDown, Trash2 } from 'lucide-react'
-import { Pokemon } from '@/app//types'
+import { Item, Pokemon } from '@/app//types'
 
 interface ComponentProps {
     pokemon: Pokemon
@@ -20,7 +20,7 @@ interface ComponentProps {
     setSelectedPokemon: (pokemon: Pokemon) => void
     setView: (view: 'list' | 'detail' | 'team') => void
     genders: string[]
-    items: string[]
+    items: Item[]
 }
 
 const typeColors: { [key: string]: string } = {
@@ -119,7 +119,11 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                             </SelectTrigger>
                             <SelectContent>
                                 {items.map(item => (
-                                    <SelectItem key={item} value={item}>{item}</SelectItem>
+                                    <SelectItem key={item.id} value={item.name}>
+                                        {item.image && (
+                                            <img src={item.image} alt={item.name} className="w-8 h-8" loading="lazy" />
+                                        )} {item.name}
+                                    </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>

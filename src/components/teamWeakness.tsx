@@ -1,10 +1,10 @@
 import React from 'react';
-import { Team, Pokemon, baseInterface } from '@/app/types';
+import { Team, Pokemon, Typing } from '@/app/types';
 import { ScrollArea, ScrollBar } from './ui/scroll-area';
 
 interface TeamWeaknessProps {
   team: Team
-  typings: baseInterface[]
+  typings: Typing[]
 }
 
 const typeColors: { [key: string]: string } = {
@@ -15,7 +15,7 @@ const typeColors: { [key: string]: string } = {
 };
 
 export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
-  const getEffectiveness = (pokemon: Pokemon, typing: baseInterface): string => {
+  const getEffectiveness = (pokemon: Pokemon, typing: Typing): string => {
     let effectiveness = 1;
 
     pokemon.typings.forEach(pokemonTyping => {
