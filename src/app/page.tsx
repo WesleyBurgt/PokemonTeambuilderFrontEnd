@@ -22,7 +22,7 @@ export default function PokemonTeamBuilder() {
     const [items, setItems] = useState<Item[]>([])
     const [offset, setOffset] = useState<number>(0);
     const [pokemonCount, setPokemonCount] = useState<number>(0);
-    const pokemonFetchLimit = 10;
+    const pokemonFetchLimit = 50;
 
     const apiConnectionStringBase = `https://localhost:7010/api`
 
@@ -79,6 +79,7 @@ export default function PokemonTeamBuilder() {
 
             setPokemonList(prevList => [...prevList, ...newPokemonList])
             console.log("offset: " + offset)
+            
             if (pokemonCount > offset + pokemonFetchLimit){
                 loadMorePokemon();
             }

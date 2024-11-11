@@ -94,7 +94,7 @@ export default function PokemonList({ pokemonList, addPokemonToTeam, setView }: 
                     <tbody>
                         {filteredPokemonList.map((pokemon, index) => (
                             <tr
-                                key={pokemon.id}
+                                key={`pokemon-${pokemon.id}`}
                                 className={`cursor-pointer hover:bg-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
                                 onClick={() => addPokemonToTeam(pokemon)}
                             >
