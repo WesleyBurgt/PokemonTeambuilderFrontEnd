@@ -57,10 +57,10 @@ export default function PokemonItemTab({ pokemon, updatePokemon, removePokemonFr
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="pl-10"
                                 />
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400" />
                             </div>
                             <table className="w-full">
-                                <thead className="sticky top-0 bg-gray-100">
+                                <thead className="sticky top-0 bg-zinc-400">
                                     <tr>
                                         <th className="p-2 text-left">Item</th>
                                         <th className="p-2 text-left">Description</th>

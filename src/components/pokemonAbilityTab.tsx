@@ -38,7 +38,7 @@ export default function PokemonAbilityTab({ pokemon, updatePokemon, removePokemo
                     <CardContent>
                         <div className="my-8">
                             <table className="w-full">
-                                <thead className="sticky top-0 bg-gray-100">
+                                <thead className="sticky top-0 bg-zinc-400">
                                     <tr>
                                         <th className="p-2 text-left">Ability</th>
                                         <th className="p-2 text-left">Description</th>
@@ -63,7 +63,7 @@ export default function PokemonAbilityTab({ pokemon, updatePokemon, removePokemo
                                         ))}
 
                                     {pokemon.abilities.some(ability => ability.isHidden) && (
-                                        <tr className="bg-gray-100">
+                                        <tr className="bg-zinc-200">
                                             <td colSpan={2} className="p-2 font-semibold">
                                                 Hidden Abilities
                                             </td>
