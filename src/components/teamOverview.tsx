@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import PokemonComponent from '@/components/pokemonComponent'
 import { ChevronLeft } from 'lucide-react'
-import { Item, Pokemon, Team } from '@/app//types'
+import { Pokemon, Team } from '@/app//types'
 import { ScrollArea } from './ui/scroll-area'
 
 interface TeamOverviewProps {
@@ -15,10 +15,9 @@ interface TeamOverviewProps {
     setSelectedMoveSlot: (moveslot: number) => void
     setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
-    items: Item[]
 }
 
-export default function TeamOverview({ team, setSelectedTeam, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, items }: TeamOverviewProps) {
+export default function TeamOverview({ team, setSelectedTeam, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders }: TeamOverviewProps) {
     return (
         <div>
             <div className="flex justify-between items-center mb-3">
@@ -45,7 +44,6 @@ export default function TeamOverview({ team, setSelectedTeam, updatePokemon, rem
                             setSelectedMoveSlot={setSelectedMoveSlot}
                             setView={setView}
                             genders={genders}
-                            items={items}
                         />
                     ))}
                 </div>

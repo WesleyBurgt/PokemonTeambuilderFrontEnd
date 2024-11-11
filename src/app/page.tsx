@@ -94,7 +94,7 @@ export default function PokemonTeamBuilder() {
         try {
             const response = await fetch(`${apiConnectionStringBase}/Gender/List`)
             const data = await response.json()
-            setGenders(data.results.map((gender: String) => gender))
+            setGenders(data.results.map((gender: string) => gender))
         } catch (error) {
             console.error('Error fetching genders:', error)
         }
@@ -270,7 +270,6 @@ export default function PokemonTeamBuilder() {
                                 setView={setView}
                                 genders={genders}
                                 natures={natures}
-                                items={items}
                             />
                         )}
                         {view === 'itemTab' && selectedTeam && selectedPokemon && (
@@ -282,7 +281,6 @@ export default function PokemonTeamBuilder() {
                                 setSelectedMoveSlot={SetSelectedMoveSlot}
                                 setView={setView}
                                 genders={genders}
-                                natures={natures}
                                 items={items}
                             />
                         )}
@@ -295,8 +293,6 @@ export default function PokemonTeamBuilder() {
                                 setSelectedMoveSlot={SetSelectedMoveSlot}
                                 setView={setView}
                                 genders={genders}
-                                natures={natures}
-                                items={items}
                             />
                         )}
                         {view === 'moveTab' && selectedTeam && selectedPokemon && selectedMoveSlot != null && (
@@ -322,7 +318,6 @@ export default function PokemonTeamBuilder() {
                                 setSelectedMoveSlot={SetSelectedMoveSlot}
                                 setView={setView}
                                 genders={genders}
-                                items={items}
                             />
                         )}
                     </div>

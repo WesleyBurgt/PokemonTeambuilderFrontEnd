@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import PokemonComponent from '@/components/pokemonComponent'
 import { ChevronLeft, Search } from 'lucide-react'
-import { Item, Nature, Pokemon } from '@/app//types'
+import { Item, Pokemon } from '@/app//types'
 import { ScrollArea } from './ui/scroll-area'
 import { Input } from '@/components/ui/input'
 
@@ -15,11 +15,10 @@ interface PokemonItemTabProps {
     setSelectedMoveSlot: (moveslot: number) => void
     setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
-    natures: Nature[]
     items: Item[]
 }
 
-export default function PokemonItemTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, natures, items }: PokemonItemTabProps) {
+export default function PokemonItemTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, items }: PokemonItemTabProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredItemList, setFilteredItemList] = useState<Item[]>(items);
 
@@ -45,7 +44,6 @@ export default function PokemonItemTab({ pokemon, updatePokemon, removePokemonFr
                 setSelectedMoveSlot={setSelectedMoveSlot}
                 setView={setView}
                 genders={genders}
-                items={items}
             />
             <ScrollArea className="scroll-area-tab pr-2 mt-4">
                 <Card>

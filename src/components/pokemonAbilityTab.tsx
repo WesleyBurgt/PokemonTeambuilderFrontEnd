@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import PokemonComponent from '@/components/pokemonComponent'
-import { ChevronLeft, Search } from 'lucide-react'
-import { Item, Nature, Pokemon } from '@/app//types'
+import { ChevronLeft } from 'lucide-react'
+import { Pokemon } from '@/app//types'
 import { ScrollArea } from './ui/scroll-area'
 
 interface PokemonAbilityTabProps {
@@ -14,11 +13,9 @@ interface PokemonAbilityTabProps {
     setSelectedMoveSlot: (moveslot: number) => void
     setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
-    natures: Nature[]
-    items: Item[]
 }
 
-export default function PokemonAbilityTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, natures, items }: PokemonAbilityTabProps) {
+export default function PokemonAbilityTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders }: PokemonAbilityTabProps) {
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
@@ -33,7 +30,6 @@ export default function PokemonAbilityTab({ pokemon, updatePokemon, removePokemo
                 setSelectedMoveSlot={setSelectedMoveSlot}
                 setView={setView}
                 genders={genders}
-                items={items}
             />
             <ScrollArea className="scroll-area-tab pr-2 mt-4">
                 <Card>

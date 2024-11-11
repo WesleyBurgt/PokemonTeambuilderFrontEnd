@@ -27,7 +27,7 @@ export interface Ability {
     id: number;
     name: string;
     description: string | null;
-    isHidden: Boolean;
+    isHidden: boolean;
 }
 
 export interface Stats {

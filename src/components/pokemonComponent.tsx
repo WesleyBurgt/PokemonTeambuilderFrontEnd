@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select"
 import { Card } from "@/components/ui/card"
 import { Copy, Download, ArrowUpDown, Trash2 } from 'lucide-react'
-import { Item, Pokemon } from '@/app//types'
+import { Pokemon } from '@/app//types'
 import { typeColors } from '@/app/typeColors'
 
 interface ComponentProps {
@@ -22,7 +22,6 @@ interface ComponentProps {
     setSelectedMoveSlot: (moveslot: number) => void
     setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
-    items: Item[]
 }
 
 const statAbbreviations: { [key in keyof Pokemon['baseStats']]: string } = {
@@ -64,7 +63,7 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
     return derivedStats;
 }
 
-export default function pokemonComponent({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, items }: ComponentProps) {
+export default function pokemonComponent({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders }: ComponentProps) {
     const derivedStats = calculateDerivedStats(pokemon)
     return (
         <Card key={pokemon.personalId} className="p-4">

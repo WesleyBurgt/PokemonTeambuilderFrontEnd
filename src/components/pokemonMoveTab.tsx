@@ -46,7 +46,6 @@ export default function PokemonMoveTab({ pokemon, updatePokemon, removePokemonFr
                 setSelectedMoveSlot={setSelectedMoveSlot}
                 setView={setView}
                 genders={genders}
-                items={items}
             />
             <ScrollArea className="scroll-area-tab pr-2 mt-4">
                 <Card>

@@ -12,7 +12,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card"
 import PokemonComponent from '@/components/pokemonComponent'
 import { ChevronLeft } from 'lucide-react'
-import { Item, Nature, Pokemon } from '@/app//types'
+import { Nature, Pokemon } from '@/app//types'
 import { ScrollArea } from './ui/scroll-area'
 
 interface PokemonStatTabProps {
@@ -24,7 +24,6 @@ interface PokemonStatTabProps {
     setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
     natures: Nature[]
-    items: Item[]
 }
 
 function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
@@ -57,7 +56,7 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
     return derivedStats;
 }
 
-export default function PokemonStatTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, natures, items }: PokemonStatTabProps) {
+export default function PokemonStatTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, natures }: PokemonStatTabProps) {
     const derivedStats = calculateDerivedStats(pokemon);
     return (
         <div>
@@ -73,7 +72,6 @@ export default function PokemonStatTab({ pokemon, updatePokemon, removePokemonFr
                 setSelectedMoveSlot={setSelectedMoveSlot}
                 setView={setView}
                 genders={genders}
-                items={items}
             />
             <ScrollArea className="scroll-area-tab pr-2 mt-4">
                 <Card>
