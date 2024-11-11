@@ -20,7 +20,7 @@ interface PokemonStatTabProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setView: (view: 'list' | 'statTab' | 'itemTab' | 'team' | 'teamList') => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'team' | 'teamList') => void
     genders: string[]
     natures: Nature[]
     items: Item[]

@@ -18,7 +18,7 @@ interface ComponentProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setView: (view: 'list' | 'statTab' | 'itemTab' | 'team' | 'teamList') => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'team' | 'teamList') => void
     genders: string[]
     items: Item[]
 }
@@ -128,21 +128,12 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                     </div>
                     <div className="mt-2">
                         <Label>Ability</Label>
-                        <Select onValueChange={(value) => {
-                            const newAbility = pokemon.abilities.find(ability => ability.name == value)
-                            if (newAbility) {
-                                updatePokemon({ ...pokemon, ability: newAbility })
-                            }
+                        <Button variant='outline' className='w-full justify-start' onClick={() => {
+                            setSelectedPokemon(pokemon)
+                            setView('abilityTab')
                         }}>
-                            <SelectTrigger id="ability-select" className="ability-select">
-                                <SelectValue placeholder={pokemon.ability.name} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {pokemon.abilities.map(ability => (
-                                    <SelectItem key={ability.id} value={ability.name}>{ability.name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                            <div>{pokemon.ability.name}</div>
+                        </Button>
                     </div>
                 </div>
                 <div className="w-1/3 min-w-60 px-4">

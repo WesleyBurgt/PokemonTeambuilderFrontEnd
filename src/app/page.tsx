@@ -8,13 +8,14 @@ import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonItemTab from '@/components/pokemonItemTab'
+import PokemonAbilityTab from '@/components/pokemonAbilityTab'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
     const [teams, SetTeams] = useState<Team[]>([])
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
     const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null)
-    const [view, setView] = useState<'list' | 'statTab' | 'itemTab' | 'team' | 'teamList'>('teamList')
+    const [view, setView] = useState<'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'team' | 'teamList'>('teamList')
     const [genders, setGenders] = useState<string[]>([])
     const [natures, setNatures] = useState<Nature[]>([])
     const [typings, setTypings] = useState<Typing[]>([])
@@ -270,6 +271,18 @@ export default function PokemonTeamBuilder() {
                         )}
                         {view === 'itemTab' && selectedTeam && selectedPokemon && (
                             <PokemonItemTab
+                                pokemon={selectedPokemon}
+                                updatePokemon={updateSelectedPokemon}
+                                removePokemonFromTeam={removePokemonFromTeam}
+                                setSelectedPokemon={setSelectedPokemon}
+                                setView={setView}
+                                genders={genders}
+                                natures={natures}
+                                items={items}
+                            />
+                        )}
+                        {view === 'abilityTab' && selectedTeam && selectedPokemon && (
+                            <PokemonAbilityTab
                                 pokemon={selectedPokemon}
                                 updatePokemon={updateSelectedPokemon}
                                 removePokemonFromTeam={removePokemonFromTeam}
