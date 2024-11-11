@@ -57,7 +57,7 @@ export default function PokemonMoveTab({ pokemon, updatePokemon, removePokemonFr
             <ScrollArea className="scroll-area-tab pr-2 mt-4">
                 <Card>
                     <CardContent>
-                        <div className="my-8">
+                        <div className="mt-6">
                         <div className="relative mb-4">
                                 <Input
                                     type="text"

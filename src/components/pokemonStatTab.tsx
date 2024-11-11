@@ -78,7 +78,7 @@ export default function PokemonStatTab({ pokemon, updatePokemon, removePokemonFr
             <ScrollArea className="scroll-area-tab pr-2 mt-4">
                 <Card>
                     <CardContent>
-                        <div className="my-8">
+                        <div className="mt-6">
                             {Object.entries(derivedStats).map(([stat, value]) => (
                                 <div key={stat} className="flex items-center mt-1">
                                     <span className="w-20 text-right mr-10">{stat}</span>
