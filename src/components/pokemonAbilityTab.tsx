@@ -38,7 +38,7 @@ export default function PokemonAbilityTab({ pokemon, updatePokemon, removePokemo
             <ScrollArea className="scroll-area-tab pr-2 mt-4">
                 <Card>
                     <CardContent>
-                    <div className="mt-6">
+                        <div className="mt-6">
                             <table className="w-full">
                                 <thead className="sticky top-0 bg-zinc-400">
                                     <tr>

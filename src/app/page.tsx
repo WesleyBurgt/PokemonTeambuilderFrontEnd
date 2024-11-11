@@ -73,7 +73,7 @@ export default function PokemonTeamBuilder() {
                     sprite: pokemon.sprite
                 })));
 
-                setPokemonCount(data.count)
+            setPokemonCount(data.count)
 
             const newPokemonList = detailedPokemonList.filter(pokemon =>
                 !pokemonList.some(existingPokemon => existingPokemon.id === pokemon.id)
@@ -82,7 +82,7 @@ export default function PokemonTeamBuilder() {
             setPokemonList(prevList => [...prevList, ...newPokemonList])
             console.log("offset: " + offset)
 
-            if (pokemonCount > offset + pokemonFetchLimit){
+            if (pokemonCount > offset + pokemonFetchLimit) {
                 loadMorePokemon();
             }
         } catch (error) {

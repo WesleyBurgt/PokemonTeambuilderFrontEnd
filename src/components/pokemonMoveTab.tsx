@@ -58,7 +58,7 @@ export default function PokemonMoveTab({ pokemon, updatePokemon, removePokemonFr
                 <Card>
                     <CardContent>
                         <div className="mt-6">
-                        <div className="relative mb-4">
+                            <div className="relative mb-4">
                                 <Input
                                     type="text"
                                     placeholder="Search Move"
