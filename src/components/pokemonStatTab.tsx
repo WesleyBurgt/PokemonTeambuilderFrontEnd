@@ -15,12 +15,12 @@ import { ChevronLeft } from 'lucide-react'
 import { Item, Nature, Pokemon } from '@/app//types'
 import { ScrollArea } from './ui/scroll-area'
 
-interface PokemonDetailProps {
+interface PokemonStatTabProps {
     pokemon: Pokemon
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setView: (view: 'list' | 'detail' | 'team') => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'team' | 'teamList') => void
     genders: string[]
     natures: Nature[]
     items: Item[]
@@ -56,7 +56,7 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
     return derivedStats;
 }
 
-export default function PokemonDetail({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setView, genders, natures, items }: PokemonDetailProps) {
+export default function PokemonStatTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setView, genders, natures, items }: PokemonStatTabProps) {
     const derivedStats = calculateDerivedStats(pokemon);
     return (
         <div>

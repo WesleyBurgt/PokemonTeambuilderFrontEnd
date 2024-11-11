@@ -3,17 +3,18 @@
 import React, { useState, useEffect } from 'react'
 import TeamOverview from '@/components/teamOverview'
 import PokemonList from '@/components/pokemonList'
-import PokemonDetail from '@/components/pokemonStatTab'
+import PokemonStatTab from '@/components/pokemonStatTab'
 import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
+import PokemonItemTab from '@/components/pokemonItemTab'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
     const [teams, SetTeams] = useState<Team[]>([])
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
     const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null)
-    const [view, setView] = useState<'list' | 'detail' | 'team' | 'teamList'>('teamList')
+    const [view, setView] = useState<'list' | 'statTab' | 'itemTab' | 'team' | 'teamList'>('teamList')
     const [genders, setGenders] = useState<string[]>([])
     const [natures, setNatures] = useState<Nature[]>([])
     const [typings, setTypings] = useState<Typing[]>([])
@@ -179,7 +180,7 @@ export default function PokemonTeamBuilder() {
                 nickname: pokemon.name,
                 level: 100,
                 gender: 'male',
-                item: '',
+                item: null,
                 nature: natures[0],
                 ability: pokemon.abilities[0],
                 selectedMoves: [],
@@ -203,7 +204,7 @@ export default function PokemonTeamBuilder() {
             setSelectedPokemon(detailedPokemon)
             const newTeamPokemons = [...selectedTeam.pokemons, detailedPokemon]
             _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
-            setView('detail')
+            setView('statTab')
         }
     }
 
@@ -259,8 +260,20 @@ export default function PokemonTeamBuilder() {
                                 setView={setView}
                             />
                         )}
-                        {view === 'detail' && selectedTeam && selectedPokemon && (
-                            <PokemonDetail
+                        {view === 'statTab' && selectedTeam && selectedPokemon && (
+                            <PokemonStatTab
+                                pokemon={selectedPokemon}
+                                updatePokemon={updateSelectedPokemon}
+                                removePokemonFromTeam={removePokemonFromTeam}
+                                setSelectedPokemon={setSelectedPokemon}
+                                setView={setView}
+                                genders={genders}
+                                natures={natures}
+                                items={items}
+                            />
+                        )}
+                        {view === 'itemTab' && selectedTeam && selectedPokemon && (
+                            <PokemonItemTab
                                 pokemon={selectedPokemon}
                                 updatePokemon={updateSelectedPokemon}
                                 removePokemonFromTeam={removePokemonFromTeam}

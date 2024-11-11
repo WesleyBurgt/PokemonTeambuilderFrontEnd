@@ -53,7 +53,7 @@ export interface Pokemon extends BasePokemon {
     nickname: string
     level: number
     gender: string
-    item: string
+    item: Item | null
     nature: Nature
     ability: Ability
     selectedMoves: Move[]

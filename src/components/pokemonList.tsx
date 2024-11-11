@@ -8,7 +8,7 @@ import { ScrollArea } from './ui/scroll-area';
 interface PokemonListProps {
     pokemonList: BasePokemon[];
     addPokemonToTeam: (pokemon: BasePokemon) => void;
-    setView: (view: 'list' | 'detail' | 'team' | 'teamList') => void;
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'team' | 'teamList') => void;
 }
 
 const typeColors: { [key: string]: string } = {

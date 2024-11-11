@@ -12,7 +12,7 @@ interface TeamOverviewProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setView: (view: 'list' | 'detail' | 'team' | 'teamList') => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'team' | 'teamList') => void
     genders: string[]
     items: Item[]
 }

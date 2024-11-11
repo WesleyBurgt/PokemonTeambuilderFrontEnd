@@ -18,7 +18,7 @@ interface ComponentProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setView: (view: 'list' | 'detail' | 'team') => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'team' | 'teamList') => void
     genders: string[]
     items: Item[]
 }
@@ -113,20 +113,18 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                     </div>
                     <div className="mt-2">
                         <Label>Item</Label>
-                        <Select onValueChange={(value) => updatePokemon({ ...pokemon, item: value })}>
-                            <SelectTrigger id="item-select" className="item-select">
-                                <SelectValue placeholder={pokemon.item} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {items.map(item => (
-                                    <SelectItem key={item.id} value={item.name}>
-                                        {item.image && (
-                                            <img src={item.image} alt={item.name} className="w-8 h-8" loading="lazy" />
-                                        )} {item.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Button variant='outline' className='w-full justify-start' onClick={() => {
+                            setSelectedPokemon(pokemon)
+                            setView('itemTab')
+                        }}>
+                            {pokemon.item && (<div> {
+                                pokemon.item.image && (<div className='flex'>
+                                    <img src={pokemon.item.image} alt={pokemon.item.name} className="w-6 h-6" loading="lazy" />
+                                    <div>{pokemon.item.name}</div>
+                                </div>)
+                            }</div>)
+                            }
+                        </Button>
                     </div>
                     <div className="mt-2">
                         <Label>Ability</Label>
@@ -206,7 +204,7 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                     <Label>Stats</Label>
                     <div onClick={() => {
                         setSelectedPokemon(pokemon)
-                        setView('detail')
+                        setView('statTab')
                     }}>
                         {Object.entries(derivedStats).map(([stat, value]) => (
                             <div key={stat} className="flex items-center mt-1">

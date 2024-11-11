@@ -11,7 +11,7 @@ interface TeamListProps {
     teams: Team[];
     addTeam: (team: Team) => void;
     setSelectedTeam: (team: Team) => void;
-    setView: (view: 'list' | 'detail' | 'team' | 'teamList') => void;
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'team' | 'teamList') => void;
 }
 
 export default function TeamList({ teams, addTeam, setSelectedTeam, setView }: TeamListProps) {
