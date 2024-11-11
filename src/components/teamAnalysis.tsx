@@ -1,12 +1,12 @@
 import React from 'react'
 import { Card } from "@/components/ui/card"
 import TypingGrid from './teamWeakness'
-import { baseInterface, Team } from '@/app/types';
+import { Typing, Team } from '@/app/types';
 import { ScrollArea } from './ui/scroll-area';
 
 interface TeamAnalysisProps {
     team: Team
-    typings: baseInterface[]
+    typings: Typing[]
 }
 
 export default function TeamAnalysis({ team, typings }: TeamAnalysisProps) {
