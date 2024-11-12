@@ -45,16 +45,18 @@ export default function PokemonItemComponent({ pokemon, updatePokemon, items }: 
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr
-                                    key={'item-0'}
-                                    className={`cursor-pointer hover:bg-gray-100`}
-                                    onClick={() => updatePokemon({ ...pokemon, item: null })}
-                                >
-                                    <td className="p-2 flex items-center">
-                                        no item
-                                    </td>
-                                    <td className="p-2"></td>
-                                </tr>
+                                {searchTerm.length == 0 && (
+                                    <tr
+                                        key={'item-0'}
+                                        className={`cursor-pointer hover:bg-gray-100`}
+                                        onClick={() => updatePokemon({ ...pokemon, item: null })}
+                                    >
+                                        <td className="p-2 flex items-center">
+                                            no item
+                                        </td>
+                                        <td className="p-2"></td>
+                                    </tr>
+                                )}
                                 {filteredItemList.map((item, index) => (
                                     <tr
                                         key={`item-${item.id}`}

@@ -51,24 +51,26 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, moveSlotI
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr
-                                    key={'move-0'}
-                                    className={`cursor-pointer hover:bg-gray-100`}
-                                    onClick={() => updatePokemon({
-                                        ...pokemon,
-                                        selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? null : m)
-                                    })}
-                                >
-                                    <td className="p-2 flex items-center">
-                                        no move
-                                    </td>
-                                    <td className="p-2"></td>
-                                    <td className="p-2"></td>
-                                    <td className="p-2"></td>
-                                    <td className="p-2"></td>
-                                    <td className="p-2"></td>
-                                    <td className="p-2"></td>
-                                </tr>
+                                {searchTerm.length == 0 && (
+                                    <tr
+                                        key={'move-0'}
+                                        className={`cursor-pointer hover:bg-gray-100`}
+                                        onClick={() => updatePokemon({
+                                            ...pokemon,
+                                            selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? null : m)
+                                        })}
+                                    >
+                                        <td className="p-2 flex items-center">
+                                            no move
+                                        </td>
+                                        <td className="p-2"></td>
+                                        <td className="p-2"></td>
+                                        <td className="p-2"></td>
+                                        <td className="p-2"></td>
+                                        <td className="p-2"></td>
+                                        <td className="p-2"></td>
+                                    </tr>
+                                )}
                                 {filteredMoveList
                                     .map((move, index) => (
                                         <tr
