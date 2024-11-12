@@ -19,9 +19,8 @@ export default function PokemonTeamBuilder() {
     const [natures, setNatures] = useState<Nature[]>([])
     const [typings, setTypings] = useState<Typing[]>([])
     const [items, setItems] = useState<Item[]>([])
-    const [offset, setOffset] = useState<number>(0);
-    const [pokemonCount, setPokemonCount] = useState<number>(0);
     const pokemonFetchLimit = 50;
+    const offset = 0;
 
     const apiConnectionStringBase = `https://localhost:7010/api`
 
@@ -30,7 +29,8 @@ export default function PokemonTeamBuilder() {
         fetchNatures();
         fetchTypings();
         fetchItems();
-        SetTeams(getTeamsFromLocalStorage)
+        SetTeams(getTeamsFromLocalStorage());
+        fetchPokemonList(offset);
     }, []);
 
     const getTeamsFromLocalStorage = (): Team[] => {
@@ -46,19 +46,11 @@ export default function PokemonTeamBuilder() {
         }
         return [];
     };
-
-    const loadMorePokemon = () => {
-        setOffset(offset + pokemonFetchLimit)
-    }
-
-    useEffect(() => {
-        fetchPokemonList(offset); // Fetch Pokémon whenever the offset changes
-    }, [offset]);
-
+    
     const fetchPokemonList = async (offset: number) => {
         try {
-            const response = await fetch(`${apiConnectionStringBase}/BasePokemon/List?offset=${offset}&limit=${pokemonFetchLimit}`)
-            const data = await response.json()
+            const response = await fetch(`${apiConnectionStringBase}/BasePokemon/List?offset=${offset}&limit=${pokemonFetchLimit}`);
+            const data = await response.json();
             const detailedPokemonList = await Promise.all(
                 data.results.map((pokemon: BasePokemon) => ({
                     id: pokemon.id,
@@ -68,24 +60,23 @@ export default function PokemonTeamBuilder() {
                     baseStats: pokemon.baseStats,
                     moves: pokemon.moves.map(move => move),
                     sprite: pokemon.sprite
-                })));
-
-            setPokemonCount(data.count)
-
+                }))
+            );
+    
             const newPokemonList = detailedPokemonList.filter(pokemon =>
                 !pokemonList.some(existingPokemon => existingPokemon.id === pokemon.id)
             );
-
-            setPokemonList(prevList => [...prevList, ...newPokemonList])
-            console.log("offset: " + offset)
-
-            if (pokemonCount > offset + pokemonFetchLimit) {
-                loadMorePokemon();
+    
+            setPokemonList(prevList => [...prevList, ...newPokemonList]);
+    
+            if (data.count > offset + pokemonFetchLimit) {
+                fetchPokemonList(offset + pokemonFetchLimit);
             }
         } catch (error) {
-            console.error('Error fetching Pokemon list:', error)
+            console.error('Error fetching Pokemon list:', error);
         }
-    }
+    };
+    
 
     const fetchGenders = async () => {
         try {
