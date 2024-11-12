@@ -51,11 +51,29 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, moveSlotI
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr
+                                    key={'move-0'}
+                                    className={`cursor-pointer hover:bg-gray-100`}
+                                    onClick={() => updatePokemon({
+                                        ...pokemon,
+                                        selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? null : m)
+                                    })}
+                                >
+                                    <td className="p-2 flex items-center">
+                                        no move
+                                    </td>
+                                    <td className="p-2"></td>
+                                    <td className="p-2"></td>
+                                    <td className="p-2"></td>
+                                    <td className="p-2"></td>
+                                    <td className="p-2"></td>
+                                    <td className="p-2"></td>
+                                </tr>
                                 {filteredMoveList
                                     .map((move, index) => (
                                         <tr
                                             key={`move-${move.id}`}
-                                            className={`cursor-pointer hover:bg-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+                                            className={`cursor-pointer hover:bg-gray-100 ${(index + 1) % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
                                             onClick={() => updatePokemon({
                                                 ...pokemon,
                                                 selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? move : m)
