@@ -3,13 +3,10 @@
 import React, { useState, useEffect } from 'react'
 import TeamOverview from '@/components/teamOverview'
 import PokemonList from '@/components/pokemonList'
-import PokemonStatTab from '@/components/pokemonStatTab'
 import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
-import PokemonItemTab from '@/components/pokemonItemTab'
-import PokemonAbilityTab from '@/components/pokemonAbilityTab'
-import PokemonMoveTab from '@/components/pokemonMoveTab'
+import PokemonTab from '@/components/pokemonTab'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
@@ -260,8 +257,8 @@ export default function PokemonTeamBuilder() {
                                 setView={setView}
                             />
                         )}
-                        {view === 'statTab' && selectedTeam && selectedPokemon && (
-                            <PokemonStatTab
+                        {(view === 'statTab' || view === 'itemTab' || view === 'abilityTab' || (view === 'moveTab' && selectedMoveSlot != null)) && selectedTeam && selectedPokemon && (
+                            <PokemonTab
                                 pokemon={selectedPokemon}
                                 updatePokemon={updateSelectedPokemon}
                                 removePokemonFromTeam={removePokemonFromTeam}
@@ -270,42 +267,9 @@ export default function PokemonTeamBuilder() {
                                 setView={setView}
                                 genders={genders}
                                 natures={natures}
-                            />
-                        )}
-                        {view === 'itemTab' && selectedTeam && selectedPokemon && (
-                            <PokemonItemTab
-                                pokemon={selectedPokemon}
-                                updatePokemon={updateSelectedPokemon}
-                                removePokemonFromTeam={removePokemonFromTeam}
-                                setSelectedPokemon={setSelectedPokemon}
-                                setSelectedMoveSlot={SetSelectedMoveSlot}
-                                setView={setView}
-                                genders={genders}
                                 items={items}
-                            />
-                        )}
-                        {view === 'abilityTab' && selectedTeam && selectedPokemon && (
-                            <PokemonAbilityTab
-                                pokemon={selectedPokemon}
-                                updatePokemon={updateSelectedPokemon}
-                                removePokemonFromTeam={removePokemonFromTeam}
-                                setSelectedPokemon={setSelectedPokemon}
-                                setSelectedMoveSlot={SetSelectedMoveSlot}
-                                setView={setView}
-                                genders={genders}
-                            />
-                        )}
-                        {view === 'moveTab' && selectedTeam && selectedPokemon && selectedMoveSlot != null && (
-                            <PokemonMoveTab
-                                pokemon={selectedPokemon}
-                                updatePokemon={updateSelectedPokemon}
-                                removePokemonFromTeam={removePokemonFromTeam}
-                                setSelectedPokemon={setSelectedPokemon}
-                                setSelectedMoveSlot={SetSelectedMoveSlot}
-                                setView={setView}
-                                genders={genders}
-                                items={items}
-                                moveSlotIndex={selectedMoveSlot}
+                                selectedMoveSlot={selectedMoveSlot}
+                                view={view}
                             />
                         )}
                         {view === 'team' && selectedTeam && (
