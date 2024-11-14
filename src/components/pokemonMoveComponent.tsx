@@ -4,6 +4,10 @@ import { Search } from 'lucide-react'
 import { Move, Pokemon } from '@/app//types'
 import { Input } from '@/components/ui/input'
 import PokemonTypingComponent from './pokemonTyping'
+import physical from './images/physical.png'
+import special from './images/special.png'
+import status from './images/status.png'
+import Image from 'next/image'
 
 interface PokemonMoveTabProps {
     pokemon: Pokemon
@@ -94,7 +98,15 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, moveSlotI
                                                 </div>
                                             </td>
                                             <td className="p-2">
-                                                {move.category} {/*TODO: Make into image*/}
+                                                {move.category === "physical" && (
+                                                    <Image src={physical} alt={move.category} className="w-10 h-4 object-contain" loading="lazy" />
+                                                )}
+                                                {move.category === "special" && (
+                                                    <Image src={special} alt={move.category} className="w-10 h-4 object-contain" loading="lazy" />
+                                                )}                                                
+                                                {move.category === "status" && (
+                                                    <Image src={status} alt={move.category} className="w-10 h-4 object-contain" loading="lazy" />
+                                                )}
                                             </td>
                                             <td className="p-2">
                                                 <div className="flex justify-center">
