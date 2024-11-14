@@ -192,7 +192,7 @@ export default function PokemonTeamBuilder() {
             setSelectedPokemon(detailedPokemon)
             const newTeamPokemons = [...selectedTeam.pokemons, detailedPokemon]
             _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
-            setView('statTab')
+            setView('itemTab')
         }
     }
 
@@ -271,6 +271,7 @@ export default function PokemonTeamBuilder() {
                                 removePokemonFromTeam={removePokemonFromTeam}
                                 setSelectedPokemon={setSelectedPokemon}
                                 setSelectedMoveSlot={SetSelectedMoveSlot}
+                                view={view}
                                 setView={setView}
                                 genders={genders}
                             />

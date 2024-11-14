@@ -14,7 +14,7 @@ interface PokemonTabProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
-    setSelectedMoveSlot: (moveslot: number) => void
+    setSelectedMoveSlot: (moveslot: number | null) => void
     setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
     natures: Nature[]
@@ -35,7 +35,9 @@ export default function PokemonTab({ pokemon, updatePokemon, removePokemonFromTe
                 updatePokemon={updatePokemon}
                 removePokemonFromTeam={removePokemonFromTeam}
                 setSelectedPokemon={setSelectedPokemon}
+                selectedMoveSlot={selectedMoveSlot}
                 setSelectedMoveSlot={setSelectedMoveSlot}
+                view={view}
                 setView={setView}
                 genders={genders}
             />
@@ -51,6 +53,7 @@ export default function PokemonTab({ pokemon, updatePokemon, removePokemonFromTe
                     <PokemonItemComponent
                         pokemon={pokemon}
                         updatePokemon={updatePokemon}
+                        setView={setView}
                         items={items}
                     />
                 )}
@@ -58,12 +61,16 @@ export default function PokemonTab({ pokemon, updatePokemon, removePokemonFromTe
                     <PokemonAbilityComponent
                         pokemon={pokemon}
                         updatePokemon={updatePokemon}
+                        setSelectedMoveSlot={setSelectedMoveSlot}
+                        setView={setView}
                     />
                 )}
                 {view === 'moveTab' && selectedMoveSlot != null && (
                     <PokemonMoveComponent
                         pokemon={pokemon}
                         updatePokemon={updatePokemon}
+                        setSelectedMoveSlot={setSelectedMoveSlot}
+                        setView={setView}
                         moveSlotIndex={selectedMoveSlot}
                     />
                 )}

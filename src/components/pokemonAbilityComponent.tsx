@@ -4,9 +4,11 @@ import { Pokemon } from '@/app//types'
 interface PokemonAbilityTabProps {
     pokemon: Pokemon
     updatePokemon: (pokemon: Pokemon) => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
+    setSelectedMoveSlot: (moveslot: number) => void
 }
 
-export default function PokemonAbilityComponent({ pokemon, updatePokemon }: PokemonAbilityTabProps) {
+export default function PokemonAbilityComponent({ pokemon, updatePokemon, setView, setSelectedMoveSlot }: PokemonAbilityTabProps) {
     return (
         <div>
             <Card>
@@ -26,7 +28,11 @@ export default function PokemonAbilityComponent({ pokemon, updatePokemon }: Poke
                                         <tr
                                             key={`ability-${ability.id}`}
                                             className={`cursor-pointer hover:bg-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-                                            onClick={() => updatePokemon({ ...pokemon, ability })}
+                                            onClick={() => {
+                                                updatePokemon({ ...pokemon, ability })
+                                                setSelectedMoveSlot(0)
+                                                setView("moveTab")
+                                            }}
                                         >
                                             <td className="p-2 flex items-center">
                                                 {ability.name}
@@ -51,7 +57,11 @@ export default function PokemonAbilityComponent({ pokemon, updatePokemon }: Poke
                                         <tr
                                             key={`ability-${ability.id}`}
                                             className={`cursor-pointer hover:bg-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-                                            onClick={() => updatePokemon({ ...pokemon, ability })}
+                                            onClick={() => {
+                                                updatePokemon({ ...pokemon, ability })
+                                                setSelectedMoveSlot(0)
+                                                setView("moveTab")
+                                            }}
                                         >
                                             <td className="p-2 flex items-center">
                                                 {ability.name}

@@ -12,10 +12,12 @@ import Image from 'next/image'
 interface PokemonMoveTabProps {
     pokemon: Pokemon
     updatePokemon: (pokemon: Pokemon) => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
+    setSelectedMoveSlot: (moveslot: number | null) => void
     moveSlotIndex: number
 }
 
-export default function PokemonMoveComponent({ pokemon, updatePokemon, moveSlotIndex }: PokemonMoveTabProps) {
+export default function PokemonMoveComponent({ pokemon, updatePokemon, setView, setSelectedMoveSlot, moveSlotIndex }: PokemonMoveTabProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredMoveList, setFilteredMoveList] = useState<Move[]>(pokemon.moves);
 
@@ -59,10 +61,20 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, moveSlotI
                                     <tr
                                         key={'move-0'}
                                         className={`cursor-pointer hover:bg-gray-100`}
-                                        onClick={() => updatePokemon({
-                                            ...pokemon,
-                                            selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? null : m)
-                                        })}
+                                        onClick={() => {
+                                            updatePokemon({
+                                                ...pokemon,
+                                                selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? null : m)
+                                            })
+                                            if (moveSlotIndex < 3) {
+                                                setSelectedMoveSlot(moveSlotIndex + 1)
+                                                setSearchTerm('')
+                                            }
+                                            else {
+                                                setView('statTab');
+                                            }
+
+                                        }}
                                     >
                                         <td className="p-2 flex items-center">
                                             no move
@@ -80,10 +92,20 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, moveSlotI
                                         <tr
                                             key={`move-${move.id}`}
                                             className={`cursor-pointer hover:bg-gray-100 ${(index + 1) % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-                                            onClick={() => updatePokemon({
-                                                ...pokemon,
-                                                selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? move : m)
-                                            })}
+                                            onClick={() => {
+                                                updatePokemon({
+                                                    ...pokemon,
+                                                    selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? move : m)
+                                                })
+                                                if (moveSlotIndex < 3) {
+                                                    setSelectedMoveSlot(moveSlotIndex + 1)
+                                                    setSearchTerm('')
+                                                }
+                                                else {
+                                                    setSelectedMoveSlot(null)
+                                                    setView('statTab');
+                                                }
+                                            }}
                                         >
                                             <td className="p-2">
                                                 {move.name}
@@ -103,7 +125,7 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, moveSlotI
                                                 )}
                                                 {move.category === "special" && (
                                                     <Image src={special} alt={move.category} className="w-10 h-4 object-contain" loading="lazy" />
-                                                )}                                                
+                                                )}
                                                 {move.category === "status" && (
                                                     <Image src={status} alt={move.category} className="w-10 h-4 object-contain" loading="lazy" />
                                                 )}

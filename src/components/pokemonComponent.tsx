@@ -19,7 +19,9 @@ interface ComponentProps {
     updatePokemon: (pokemon: Pokemon) => void
     removePokemonFromTeam: (id: number) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
+    selectedMoveSlot: number | null
     setSelectedMoveSlot: (moveslot: number) => void
+    view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList'
     setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     genders: string[]
 }
@@ -63,7 +65,7 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
     return derivedStats;
 }
 
-export default function pokemonComponent({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders }: ComponentProps) {
+export default function pokemonComponent({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, selectedMoveSlot, setSelectedMoveSlot, view, setView, genders }: ComponentProps) {
     const derivedStats = calculateDerivedStats(pokemon)
     return (
         <Card key={pokemon.personalId} className="p-4">
@@ -105,7 +107,7 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                     </div>
                     <div className="mt-2">
                         <Label>Item</Label>
-                        <Button variant='outline' className='w-full justify-start' onClick={() => {
+                        <Button variant='outline' className={`w-full justify-start ${(view === 'itemTab') ? 'outline outline-sky-400' : ''}`} onClick={() => {
                             setSelectedPokemon(pokemon)
                             setView('itemTab')
                         }}>
@@ -120,7 +122,7 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                     </div>
                     <div className="mt-2">
                         <Label>Ability</Label>
-                        <Button variant='outline' className='w-full justify-start' onClick={() => {
+                        <Button variant='outline' className={`w-full justify-start ${(view === 'abilityTab') ? 'outline outline-sky-400' : ''}`} onClick={() => {
                             setSelectedPokemon(pokemon)
                             setView('abilityTab')
                         }}>
@@ -160,11 +162,15 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                     <div className="mt-2">
                         <Label>Moves</Label>
                         {[0, 1, 2, 3].map((index) => (
-                            <Button key={`moveSlot-${index}`} variant='outline' className='w-full justify-start my-2' onClick={() => {
-                                setSelectedPokemon(pokemon)
-                                setSelectedMoveSlot(index)
-                                setView('moveTab')
-                            }}>
+                            <Button
+                                key={`moveSlot-${index}`}
+                                variant={'outline'}
+                                className={`w-full justify-start my-2 ${(view === 'moveTab' && index === selectedMoveSlot) ? 'outline outline-sky-400' : ''}`}
+                                onClick={() => {
+                                    setSelectedPokemon(pokemon)
+                                    setSelectedMoveSlot(index)
+                                    setView('moveTab')
+                                }}>
                                 <div>{pokemon.selectedMoves[index]?.name}</div>
                             </Button>
                         ))}
@@ -172,23 +178,25 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                 </div>
                 <div className="w-1/3 min-w-60">
                     <Label>Stats</Label>
-                    <div onClick={() => {
-                        setSelectedPokemon(pokemon)
-                        setView('statTab')
-                    }}>
-                        {Object.entries(derivedStats).map(([stat, value]) => (
-                            <div key={stat} className="flex items-center mt-1">
-                                <span className="w-10 text-right mr-10">{statAbbreviations[stat as keyof Pokemon['baseStats']]}</span>
-                                <div className="flex-1 bg-gray-200 rounded-full h-2.5">
-                                    <div
-                                        className="bg-blue-600 h-2.5 rounded-full"
-                                        style={{ width: `${(value / 714) * 100}%` }}
-                                    ></div>
+                    <Button variant={'outline'} className={`w-full h-fit ${(view === 'statTab') ? 'outline outline-sky-400' : ''}`}>
+                        <div className='w-full h-full py-4' onClick={() => {
+                            setSelectedPokemon(pokemon)
+                            setView('statTab')
+                        }}>
+                            {Object.entries(derivedStats).map(([stat, value]) => (
+                                <div key={stat} className="flex items-center mt-1">
+                                    <span className="w-10 text-right mr-10">{statAbbreviations[stat as keyof Pokemon['baseStats']]}</span>
+                                    <div className="flex-1 bg-gray-200 rounded-full h-2.5">
+                                        <div
+                                            className="bg-blue-600 h-2.5 rounded-full"
+                                            style={{ width: `${(value / 714) * 100}%` }}
+                                        ></div>
+                                    </div>
+                                    <span className="w-10 text-right ml-2">{value}</span>
                                 </div>
-                                <span className="w-10 text-right ml-2">{value}</span>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    </Button>
                 </div>
             </div>
         </Card>

@@ -7,10 +7,11 @@ import { Input } from '@/components/ui/input'
 interface PokemonItemTabProps {
     pokemon: Pokemon
     updatePokemon: (pokemon: Pokemon) => void
+    setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
     items: Item[]
 }
 
-export default function PokemonItemComponent({ pokemon, updatePokemon, items }: PokemonItemTabProps) {
+export default function PokemonItemComponent({ pokemon, updatePokemon, setView, items }: PokemonItemTabProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredItemList, setFilteredItemList] = useState<Item[]>(items);
 
@@ -49,7 +50,10 @@ export default function PokemonItemComponent({ pokemon, updatePokemon, items }: 
                                     <tr
                                         key={'item-0'}
                                         className={`cursor-pointer hover:bg-gray-100`}
-                                        onClick={() => updatePokemon({ ...pokemon, item: null })}
+                                        onClick={() => {
+                                            updatePokemon({ ...pokemon, item: null })
+                                            setView("abilityTab")
+                                        }}
                                     >
                                         <td className="p-2 flex items-center">
                                             no item
@@ -61,7 +65,10 @@ export default function PokemonItemComponent({ pokemon, updatePokemon, items }: 
                                     <tr
                                         key={`item-${item.id}`}
                                         className={`cursor-pointer hover:bg-gray-100 ${(index + 1) % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-                                        onClick={() => updatePokemon({ ...pokemon, item: item })}
+                                        onClick={() => {
+                                            updatePokemon({ ...pokemon, item: item })
+                                            setView("abilityTab")
+                                        }}
                                     >
                                         <td className="p-2 flex items-center">
                                             {item.image && (
