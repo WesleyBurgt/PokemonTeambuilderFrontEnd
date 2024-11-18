@@ -22,7 +22,7 @@ export default function PokemonTeamBuilder() {
     const pokemonFetchLimit = 50;
     const offset = 0;
 
-    const apiConnectionStringBase = `https://localhost:7010/api`
+    const apiConnectionStringBase = `${process.env.NEXT_PUBLIC_DATABASE_URL}/api`;
 
     useEffect(() => {
         fetchGenders();
