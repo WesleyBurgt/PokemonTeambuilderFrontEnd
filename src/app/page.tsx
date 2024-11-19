@@ -7,9 +7,10 @@ import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonTab from '@/components/pokemonTab'
+import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings } from './api-client'
 
 export default function PokemonTeamBuilder() {
-    const [pokemonList, setPokemonList] = useState<Pokemon[]>([])
+    const [pokemonList, setPokemonList] = useState<BasePokemon[]>([])
     const [teams, SetTeams] = useState<Team[]>([])
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)
     const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null)
@@ -22,15 +23,15 @@ export default function PokemonTeamBuilder() {
     const pokemonFetchLimit = 50;
     const offset = 0;
 
-    const apiConnectionStringBase = `${process.env.NEXT_PUBLIC_DATABASE_URL}/api`;
+
 
     useEffect(() => {
-        fetchGenders();
-        fetchNatures();
-        fetchTypings();
-        fetchItems();
+        fetchGenders(setGenders);
+        fetchNatures(setNatures);
+        fetchTypings(setTypings);
+        fetchItems(setItems);
         SetTeams(getTeamsFromLocalStorage());
-        fetchPokemonList(offset);
+        fetchPokemonList(offset, pokemonFetchLimit, pokemonList, setPokemonList);
     }, []);
 
     const getTeamsFromLocalStorage = (): Team[] => {
@@ -45,113 +46,6 @@ export default function PokemonTeamBuilder() {
             }
         }
         return [];
-    };
-    
-    const fetchPokemonList = async (offset: number) => {
-        try {
-            const response = await fetch(`${apiConnectionStringBase}/BasePokemon/List?offset=${offset}&limit=${pokemonFetchLimit}`);
-            const data = await response.json();
-            const detailedPokemonList = await Promise.all(
-                data.results.map((pokemon: BasePokemon) => ({
-                    id: pokemon.id,
-                    name: pokemon.name,
-                    typings: pokemon.typings.map(typing => typing),
-                    abilities: pokemon.abilities.map(ability => ability),
-                    baseStats: pokemon.baseStats,
-                    moves: pokemon.moves.map(move => move),
-                    sprite: pokemon.sprite
-                }))
-            );
-    
-            const newPokemonList = detailedPokemonList.filter(pokemon =>
-                !pokemonList.some(existingPokemon => existingPokemon.id === pokemon.id)
-            );
-    
-            setPokemonList(prevList => [...prevList, ...newPokemonList]);
-    
-            if (data.count > offset + pokemonFetchLimit) {
-                fetchPokemonList(offset + pokemonFetchLimit);
-            }
-        } catch (error) {
-            console.error('Error fetching Pokemon list:', error);
-        }
-    };
-    
-
-    const fetchGenders = async () => {
-        try {
-            const response = await fetch(`${apiConnectionStringBase}/Gender/List`)
-            const data = await response.json()
-            setGenders(data.results.map((gender: string) => gender))
-        } catch (error) {
-            console.error('Error fetching genders:', error)
-        }
-    }
-
-    const fetchNatures = async () => {
-        try {
-            const response = await fetch(`${apiConnectionStringBase}/Nature/List`);
-            const data = await response.json();
-            const detailedNatures = await Promise.all(
-                data.results.map((natureResponse: Nature) => ({
-                    name: natureResponse.name,
-                    up: natureResponse.up,
-                    down: natureResponse.down,
-                }))
-            );
-            setNatures(detailedNatures);
-        } catch (error) {
-            console.error('Error fetching natures:', error);
-        }
-    };
-
-    const fetchTypings = async () => {
-        try {
-            const response = await fetch(`${apiConnectionStringBase}/Typing/List`);
-            const data = await response.json();
-
-            const typings = await Promise.all(
-                data.results.map((typingResponse: Typing) => {
-                    const typing: Typing = {
-                        id: typingResponse.id,
-                        name: typingResponse.name,
-                        weaknesses: typingResponse.weaknesses,
-                        resistances: typingResponse.resistances,
-                        immunities: typingResponse.immunities
-                    };
-
-                    return typing;
-                })
-            );
-
-            setTypings(typings);
-        } catch (error) {
-            console.error('Error fetching types:', error);
-        }
-    };
-
-    const fetchItems = async () => {
-        try {
-            const response = await fetch(`${apiConnectionStringBase}/Item/List`)
-            const data = await response.json()
-
-            const items = await Promise.all(
-                data.results.map((itemResponse: Item) => {
-                    const item: Item = {
-                        id: itemResponse.id,
-                        name: itemResponse.name,
-                        description: itemResponse.description,
-                        image: itemResponse.image
-                    };
-
-                    return item;
-                })
-            );
-
-            setItems(items);
-        } catch (error) {
-            console.error('Error fetching items:', error)
-        }
     };
 
     const getMaxPersonalId = (): number => {
