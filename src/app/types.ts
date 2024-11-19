@@ -1,7 +1,7 @@
 export interface BasePokemon {
     id: number;
     name: string;
-    typings: Typing[];
+    typings: BasePokemonTyping[];
     abilities: Ability[];
     baseStats: Stats;
     moves: Move[];
@@ -13,6 +13,11 @@ export interface Item {
     name: string;
     description: string | null;
     image: string | null;
+}
+
+export interface BasePokemonTyping {
+    slot: number;
+    typing: Typing;
 }
 
 export interface Typing {

@@ -91,13 +91,14 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                                 className="text-lg font-bold mb-2"
                             />
                             <div className="flex space-x-2">
-                                {pokemon.typings.map(typing => (
-                                    <div key={typing.name}>
-                                        <PokemonTypingComponent
-                                            typing={typing}
-                                        />
-                                    </div>
-                                ))}
+                                {pokemon.typings
+                                    .sort((a, b) => a.slot - b.slot)
+                                    .map(typing => (
+                                        <div key={typing.typing.name}>
+                                            <PokemonTypingComponent typing={typing.typing} />
+                                        </div>
+                                    ))}
+
                             </div>
                         </div>
                     </div>

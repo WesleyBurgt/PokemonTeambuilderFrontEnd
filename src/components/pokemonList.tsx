@@ -97,13 +97,13 @@ export default function PokemonList({ pokemonList, addPokemonToTeam, setView }: 
                                     {pokemon.name}
                                 </td>
                                 <td className="p-2">
-                                    {pokemon.typings.map(typing => (
-                                        <div key={typing.name}>
-                                            <PokemonTypingComponent
-                                                typing={typing}
-                                            />
-                                        </div>
-                                    ))}
+                                    {pokemon.typings
+                                        .sort((a, b) => a.slot - b.slot)
+                                        .map(typing => (
+                                            <div key={typing.typing.name}>
+                                                <PokemonTypingComponent typing={typing.typing} />
+                                            </div>
+                                        ))}
                                 </td>
                                 <td className="p-2">{pokemon.abilities.map(ability => ability.name).join(', ')}</td>
                                 <td className="p-2">{pokemon.baseStats.hp}</td>

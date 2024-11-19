@@ -13,13 +13,13 @@ export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
         let effectiveness = 1;
 
         pokemon.typings.forEach(pokemonTyping => {
-            if (pokemonTyping.immunities.some(immunity => immunity.name === typing.name)) {
+            if (pokemonTyping.typing.immunities.some(immunity => immunity.name === typing.name)) {
                 effectiveness = 0;
             }
-            else if (pokemonTyping.weaknesses.some(weakness => weakness.name === typing.name)) {
+            else if (pokemonTyping.typing.weaknesses.some(weakness => weakness.name === typing.name)) {
                 effectiveness *= 2;
             }
-            else if (pokemonTyping.resistances.some(resistance => resistance.name === typing.name)) {
+            else if (pokemonTyping.typing.resistances.some(resistance => resistance.name === typing.name)) {
                 effectiveness *= 0.5;
             }
         });
