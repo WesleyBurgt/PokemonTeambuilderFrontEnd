@@ -2,11 +2,11 @@ import { BasePokemon, Item, Nature, Typing } from "./types";
 
 const apiConnectionStringBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
-export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number, pokemonList: BasePokemon[], setPokemonList: (pokemonList: BasePokemon[]) => void) => {
+export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number) => {
     try {
         const response = await fetch(`${apiConnectionStringBase}/BasePokemon/List?offset=${offset}&limit=${pokemonFetchLimit}`);
         const data = await response.json();
-        const detailedPokemonList = await Promise.all(
+        const pokemonList = await Promise.all(
             data.results.map((pokemon: BasePokemon) => ({
                 id: pokemon.id,
                 name: pokemon.name,
@@ -18,15 +18,7 @@ export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number
             }))
         );
 
-        const newPokemonList = detailedPokemonList.filter(pokemon =>
-            !pokemonList.some(existingPokemon => existingPokemon.id === pokemon.id)
-        );
-
-        setPokemonList([...pokemonList, ...newPokemonList]);
-
-        if (data.count > offset + pokemonFetchLimit) {
-            fetchPokemonList(offset + pokemonFetchLimit, pokemonFetchLimit, pokemonList, setPokemonList);
-        }
+        return {pokemons: pokemonList, count: data.count}
     } catch (error) {
         console.error('Error fetching Pokemon list:', error);
     }

@@ -8,6 +8,7 @@ import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonTab from '@/components/pokemonTab'
 import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings } from './api-client'
+import { off } from 'process'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<BasePokemon[]>([])
@@ -20,10 +21,8 @@ export default function PokemonTeamBuilder() {
     const [natures, setNatures] = useState<Nature[]>([])
     const [typings, setTypings] = useState<Typing[]>([])
     const [items, setItems] = useState<Item[]>([])
-    const pokemonFetchLimit = 50;
-    const offset = 0;
-
-
+    const pokemonFetchLimit = 30;
+    const [offset, setOffset] = useState<number>(0)
 
     useEffect(() => {
         fetchGenders(setGenders);
@@ -31,8 +30,26 @@ export default function PokemonTeamBuilder() {
         fetchTypings(setTypings);
         fetchItems(setItems);
         SetTeams(getTeamsFromLocalStorage());
-        fetchPokemonList(offset, pokemonFetchLimit, pokemonList, setPokemonList);
+        updatePokemonList();
     }, []);
+
+    useEffect(() => {
+        updatePokemonList()
+    }, [offset])
+
+    const updatePokemonList = async () => {
+        const result = await fetchPokemonList(offset, pokemonFetchLimit)
+        if (result?.pokemons) {
+            const newPokemonList = result.pokemons.filter(pokemon =>
+                !pokemonList.some(existingPokemon => existingPokemon.id === pokemon.id)
+            )
+            setPokemonList([...pokemonList, ...newPokemonList]);
+
+            if (offset + pokemonFetchLimit < result.count) {
+                setOffset(offset + pokemonFetchLimit)
+            }
+        }
+    }
 
     const getTeamsFromLocalStorage = (): Team[] => {
         const storedTeams = localStorage.getItem("teams");
