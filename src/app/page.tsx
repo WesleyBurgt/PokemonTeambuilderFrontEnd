@@ -8,7 +8,6 @@ import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonTab from '@/components/pokemonTab'
 import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings } from './api-client'
-import { off } from 'process'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<BasePokemon[]>([])
