@@ -1,6 +1,52 @@
 import { BasePokemon, Item, Nature, Typing } from "./types";
+import { LoginModel } from "./types";
 
 const apiConnectionStringBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+
+export async function loginUser(login: LoginModel): Promise<{ accesToken: string; refreshToken: string }> {
+    try {
+        const response = await fetch(`${apiConnectionStringBase}/auth/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(login),
+        });
+
+        if (!response.ok) {
+            throw new Error("Invalid username or password");
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Login failed:", error);
+        throw error;
+    }
+}
+
+export async function registerUser(login: LoginModel): Promise<{ accesToken: string; refreshToken: string }> {
+    try {
+      const response = await fetch(`${apiConnectionStringBase}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(login),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Registration failed");
+      }
+  
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error;
+    }
+}
 
 export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number) => {
     try {
@@ -18,7 +64,7 @@ export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number
             }))
         );
 
-        return {pokemons: pokemonList, count: data.count}
+        return { pokemons: pokemonList, count: data.count }
     } catch (error) {
         console.error('Error fetching Pokemon list:', error);
     }

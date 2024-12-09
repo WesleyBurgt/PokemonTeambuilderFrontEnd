@@ -8,6 +8,9 @@ import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonTab from '@/components/pokemonTab'
 import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings } from './api-client'
+import LoginPage from './pages/LoginPage'
+import { getAccessToken } from "@/utils/tokenUtils";
+import LogoutButton from '@/components/LogoutButton'
 
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<BasePokemon[]>([])
@@ -22,6 +25,12 @@ export default function PokemonTeamBuilder() {
     const [items, setItems] = useState<Item[]>([])
     const pokemonFetchLimit = 30;
     const [offset, setOffset] = useState<number>(0)
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+    useEffect(() => {
+        const accessToken = getAccessToken();
+        setIsAuthenticated(!!accessToken); // Set isAuthenticated to true if a token exists
+    }, []);
 
     useEffect(() => {
         fetchGenders(setGenders);
@@ -30,11 +39,11 @@ export default function PokemonTeamBuilder() {
         fetchItems(setItems);
         SetTeams(getTeamsFromLocalStorage());
         updatePokemonList();
-    }, []);
+    }, [isAuthenticated]);
 
     useEffect(() => {
         updatePokemonList()
-    }, [offset])
+    }, [offset, isAuthenticated])
 
     const updatePokemonList = async () => {
         const result = await fetchPokemonList(offset, pokemonFetchLimit)
@@ -136,10 +145,21 @@ export default function PokemonTeamBuilder() {
         localStorage.setItem("teams", JSON.stringify(teams))
     }
 
+    if (!isAuthenticated) {
+        return <LoginPage
+            setIsAuthenticated={setIsAuthenticated}
+        />;
+    }
+
     return (
         <div>
             {view === 'teamList' && (
-                <div className="w-full bg-zinc-200">
+                <div className="w-full relative bg-zinc-200">
+                    <div className="absolute right-0 m-3 z-10">
+                        <LogoutButton
+                            setIsAuthenticated={setIsAuthenticated}
+                        />
+                    </div>
                     <TeamList
                         teams={teams}
                         addTeam={addTeam}
@@ -188,7 +208,12 @@ export default function PokemonTeamBuilder() {
                         )}
                     </div>
                     {selectedTeam && typings && (
-                        <div className="w-full xl:w-2/5 bg-zinc-400 space-y-4">
+                        <div className="w-full relative xl:w-2/5 bg-zinc-400 space-y-4">
+                            <div className="absolute right-0 m-3 z-10">
+                                <LogoutButton
+                                    setIsAuthenticated={setIsAuthenticated}
+                                />
+                            </div>
                             <TeamAnalysis
                                 team={selectedTeam}
                                 typings={typings}
@@ -197,7 +222,6 @@ export default function PokemonTeamBuilder() {
                     )}
                 </div>
             )}
-
         </div>
     )
 }
