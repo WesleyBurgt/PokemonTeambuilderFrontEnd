@@ -36,12 +36,12 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
     };
 
     const derivedStats: Pokemon['baseStats'] = {
-        hp: Math.floor(((2 * pokemon.baseStats.hp + pokemon.ivs.hp + Math.floor(pokemon.evs.hp / 4)) * level) / 100) + level + 10,
-        attack: calculateStat(pokemon.baseStats.attack, pokemon.evs.attack, pokemon.ivs.attack, getNatureMultiplier('attack')),
-        defense: calculateStat(pokemon.baseStats.defense, pokemon.evs.defense, pokemon.ivs.defense, getNatureMultiplier('defense')),
-        specialAttack: calculateStat(pokemon.baseStats.specialAttack, pokemon.evs.specialAttack, pokemon.ivs.specialAttack, getNatureMultiplier('specialAttack')),
-        specialDefense: calculateStat(pokemon.baseStats.specialDefense, pokemon.evs.specialDefense, pokemon.ivs.specialDefense, getNatureMultiplier('specialDefense')),
-        speed: calculateStat(pokemon.baseStats.speed, pokemon.evs.speed, pokemon.ivs.speed, getNatureMultiplier('speed'))
+        hp: Math.floor(((2 * pokemon.baseStats.hp + pokemon.iVs.hp + Math.floor(pokemon.eVs.hp / 4)) * level) / 100) + level + 10,
+        attack: calculateStat(pokemon.baseStats.attack, pokemon.eVs.attack, pokemon.iVs.attack, getNatureMultiplier('attack')),
+        defense: calculateStat(pokemon.baseStats.defense, pokemon.eVs.defense, pokemon.iVs.defense, getNatureMultiplier('defense')),
+        specialAttack: calculateStat(pokemon.baseStats.specialAttack, pokemon.eVs.specialAttack, pokemon.iVs.specialAttack, getNatureMultiplier('specialAttack')),
+        specialDefense: calculateStat(pokemon.baseStats.specialDefense, pokemon.eVs.specialDefense, pokemon.iVs.specialDefense, getNatureMultiplier('specialDefense')),
+        speed: calculateStat(pokemon.baseStats.speed, pokemon.eVs.speed, pokemon.iVs.speed, getNatureMultiplier('speed'))
     };
 
     return derivedStats;
@@ -70,7 +70,7 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                     <div className="mt-4">
                         <Label>EVs</Label>
                         <div className="grid grid-cols-3 gap-2">
-                            {Object.entries(pokemon.evs).map(([stat, value]) => (
+                            {Object.entries(pokemon.eVs).map(([stat, value]) => (
                                 <div key={stat}>
                                     <Label htmlFor={`ev-${stat}`}>{stat}</Label>
                                     <Input
@@ -78,8 +78,8 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                         type="number"
                                         value={value}
                                         onChange={(e) => {
-                                            const newEvs = { ...pokemon.evs, [stat]: parseInt(e.target.value) }
-                                            updatePokemon({ ...pokemon, evs: newEvs })
+                                            const newEvs = { ...pokemon.eVs, [stat]: parseInt(e.target.value) }
+                                            updatePokemon({ ...pokemon, eVs: newEvs })
                                         }}
                                         min={0}
                                         max={252}
@@ -91,7 +91,7 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                     <div className="mt-4">
                         <Label>IVs</Label>
                         <div className="grid grid-cols-3 gap-2">
-                            {Object.entries(pokemon.ivs).map(([stat, value]) => (
+                            {Object.entries(pokemon.iVs).map(([stat, value]) => (
                                 <div key={stat}>
                                     <Label htmlFor={`iv-${stat}`}>{stat}</Label>
                                     <Input
@@ -99,8 +99,8 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                         type="number"
                                         value={value}
                                         onChange={(e) => {
-                                            const newIvs = { ...pokemon.ivs, [stat]: parseInt(e.target.value) }
-                                            updatePokemon({ ...pokemon, ivs: newIvs })
+                                            const newIvs = { ...pokemon.iVs, [stat]: parseInt(e.target.value) }
+                                            updatePokemon({ ...pokemon, iVs: newIvs })
                                         }}
                                         min={0}
                                         max={31}
