@@ -69,8 +69,8 @@ export interface Pokemon extends BasePokemon {
     nature: Nature
     ability: Ability
     selectedMoves: (Move | null)[]
-    evs: Stats
-    ivs: Stats
+    eVs: Stats
+    iVs: Stats
 }
 
 export interface Team {

@@ -1,4 +1,6 @@
-import { BasePokemon, Item, Nature, Typing } from "./types";
+import { BasePokemon, Item, Nature, Pokemon, Team, Typing } from "./types";
+import axios from 'axios';
+import { getAccessToken } from "@/utils/tokenUtils";
 import { LoginModel } from "./types";
 
 const apiConnectionStringBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
@@ -47,6 +49,67 @@ export async function registerUser(login: LoginModel): Promise<{ accesToken: str
       throw error;
     }
 }
+
+export const getTeams = async (setTeams: (teams: Team[]) => void) => {
+    try {
+        const response = await axios.get(`${apiConnectionStringBase}/Team/GetTeams`, {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getAccessToken()}`
+            }
+        });
+
+        setTeams(response.data.results)
+    } catch (error) {
+        console.error('Error fetching teams:', error);
+    }
+};
+
+export const createTeam = async (teams: Team[], setTeams: (teams: Team[]) => void) => {
+    try {
+        const response = await axios.post(
+            `${apiConnectionStringBase}/Team/CreateTeam`,
+            { },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getAccessToken()}`
+                }
+            }
+        );
+        const team: Team = response.data;
+        setTeams([...teams, team]);
+    } catch (error) {
+        console.error('Error adding pokemon to team:', error);
+    }
+}
+
+export const addPokemonToTeam = async (team: Team, basePokemonId: number, setTeam: (team: Team) => void) => {
+    try {
+        const response = await axios.post(
+            `${apiConnectionStringBase}/Team/AddPokemonToTeam`,
+            { teamId: team.id, basePokemonId },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getAccessToken()}`
+                }
+            }
+        );
+        const pokemon: Pokemon = response.data;
+
+        const updatedTeam = {
+            ...team,
+            pokemons: [...team.pokemons, pokemon],
+        };
+
+        setTeam(updatedTeam);
+        return pokemon;
+    } catch (error) {
+        console.error('Error adding pokemon to team:', error);
+    }
+};
+
 
 export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number) => {
     try {

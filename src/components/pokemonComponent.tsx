@@ -54,12 +54,12 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
     };
 
     const derivedStats: Pokemon['baseStats'] = {
-        hp: Math.floor(((2 * pokemon.baseStats.hp + pokemon.ivs.hp + Math.floor(pokemon.evs.hp / 4)) * level) / 100) + level + 10,
-        attack: calculateStat(pokemon.baseStats.attack, pokemon.evs.attack, pokemon.ivs.attack, getNatureMultiplier('attack')),
-        defense: calculateStat(pokemon.baseStats.defense, pokemon.evs.defense, pokemon.ivs.defense, getNatureMultiplier('defense')),
-        specialAttack: calculateStat(pokemon.baseStats.specialAttack, pokemon.evs.specialAttack, pokemon.ivs.specialAttack, getNatureMultiplier('specialAttack')),
-        specialDefense: calculateStat(pokemon.baseStats.specialDefense, pokemon.evs.specialDefense, pokemon.ivs.specialDefense, getNatureMultiplier('specialDefense')),
-        speed: calculateStat(pokemon.baseStats.speed, pokemon.evs.speed, pokemon.ivs.speed, getNatureMultiplier('speed'))
+        hp: Math.floor(((2 * pokemon.baseStats.hp + pokemon.iVs.hp + Math.floor(pokemon.eVs.hp / 4)) * level) / 100) + level + 10,
+        attack: calculateStat(pokemon.baseStats.attack, pokemon.eVs.attack, pokemon.iVs.attack, getNatureMultiplier('attack')),
+        defense: calculateStat(pokemon.baseStats.defense, pokemon.eVs.defense, pokemon.iVs.defense, getNatureMultiplier('defense')),
+        specialAttack: calculateStat(pokemon.baseStats.specialAttack, pokemon.eVs.specialAttack, pokemon.iVs.specialAttack, getNatureMultiplier('specialAttack')),
+        specialDefense: calculateStat(pokemon.baseStats.specialDefense, pokemon.eVs.specialDefense, pokemon.iVs.specialDefense, getNatureMultiplier('specialDefense')),
+        speed: calculateStat(pokemon.baseStats.speed, pokemon.eVs.speed, pokemon.iVs.speed, getNatureMultiplier('speed'))
     };
 
     return derivedStats;

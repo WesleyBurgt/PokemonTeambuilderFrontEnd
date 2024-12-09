@@ -7,7 +7,7 @@ import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonTab from '@/components/pokemonTab'
-import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings } from './api-client'
+import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings, getTeams, addPokemonToTeam, createTeam } from './api-client'
 import LoginPage from './pages/LoginPage'
 import { getAccessToken } from "@/utils/tokenUtils";
 import LogoutButton from '@/components/LogoutButton'
@@ -37,12 +37,12 @@ export default function PokemonTeamBuilder() {
         fetchNatures(setNatures);
         fetchTypings(setTypings);
         fetchItems(setItems);
-        SetTeams(getTeamsFromLocalStorage());
+        getTeams(SetTeams);
         updatePokemonList();
     }, [isAuthenticated]);
 
     useEffect(() => {
-        updatePokemonList()
+        updatePokemonList() 
     }, [offset, isAuthenticated])
 
     const updatePokemonList = async () => {
@@ -59,61 +59,17 @@ export default function PokemonTeamBuilder() {
         }
     }
 
-    const getTeamsFromLocalStorage = (): Team[] => {
-        const storedTeams = localStorage.getItem("teams");
-
-        if (storedTeams) {
-            try {
-                return JSON.parse(storedTeams) as Team[];
-            } catch (error) {
-                console.error("Error parsing teams from localStorage:", error);
-                return [];
-            }
+    const addPokemonToSelectedTeam = (pokemon: BasePokemon) => {
+        if (selectedTeam) {
+            addPokemonToTeam(selectedTeam, pokemon.id, _setSelectedTeam)
+                .then((newPokemon) => {
+                    if (newPokemon != undefined) {
+                        setSelectedPokemon(newPokemon);
+                        setView('itemTab')
+                    }
+                });
         }
-        return [];
     };
-
-    const getMaxPersonalId = (): number => {
-        const allPersonalIds = teams.flatMap(team => team.pokemons.map(pokemon => pokemon.personalId));
-        return allPersonalIds.length > 0 ? Math.max(...allPersonalIds) : 0;
-    };
-
-    const addPokemonToTeam = (pokemon: BasePokemon) => {
-        if (selectedTeam && selectedTeam.pokemons.length < 6) {
-            const newHighestPersonalId = getMaxPersonalId() + 1
-            const detailedPokemon: Pokemon = {
-                ...pokemon,
-                personalId: newHighestPersonalId,
-                nickname: pokemon.name,
-                level: 100,
-                gender: genders[0],
-                item: null,
-                nature: natures[0],
-                ability: pokemon.abilities[0],
-                selectedMoves: [null, null, null, null],
-                evs: {
-                    hp: 0,
-                    attack: 0,
-                    defense: 0,
-                    specialAttack: 0,
-                    specialDefense: 0,
-                    speed: 0
-                },
-                ivs: {
-                    hp: 31,
-                    attack: 31,
-                    defense: 31,
-                    specialAttack: 31,
-                    specialDefense: 31,
-                    speed: 31
-                }
-            }
-            setSelectedPokemon(detailedPokemon)
-            const newTeamPokemons = [...selectedTeam.pokemons, detailedPokemon]
-            _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
-            setView('itemTab')
-        }
-    }
 
     const removePokemonFromTeam = (pokemonId: number) => {
         if (selectedTeam) {
@@ -135,14 +91,12 @@ export default function PokemonTeamBuilder() {
         setSelectedTeam(team)
         const newTeams = teams.map(t => t.id === team.id ? team : t)
         SetTeams(newTeams)
-        localStorage.setItem("teams", JSON.stringify(teams))
     }
 
     const addTeam = (team: Team) => {
-        SetTeams([...teams, team])
+        createTeam(teams, SetTeams)
         setSelectedTeam(team)
         setView('list')
-        localStorage.setItem("teams", JSON.stringify(teams))
     }
 
     if (!isAuthenticated) {
@@ -174,7 +128,7 @@ export default function PokemonTeamBuilder() {
                         {view === 'list' && selectedTeam && (
                             <PokemonList
                                 pokemonList={pokemonList}
-                                addPokemonToTeam={addPokemonToTeam}
+                                addPokemonToTeam={addPokemonToSelectedTeam}
                                 setView={setView}
                             />
                         )}
