@@ -17,7 +17,7 @@ import PokemonTypingComponent from './pokemonTyping'
 interface ComponentProps {
     pokemon: Pokemon
     updatePokemon: (pokemon: Pokemon) => void
-    removePokemonFromTeam: (id: number) => void
+    deletePokemonFromTeam: (pokemon: Pokemon) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
     selectedMoveSlot: number | null
     setSelectedMoveSlot: (moveslot: number) => void
@@ -65,7 +65,7 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
     return derivedStats;
 }
 
-export default function pokemonComponent({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, selectedMoveSlot, setSelectedMoveSlot, view, setView, genders }: ComponentProps) {
+export default function pokemonComponent({ pokemon, updatePokemon, deletePokemonFromTeam, setSelectedPokemon, selectedMoveSlot, setSelectedMoveSlot, view, setView, genders }: ComponentProps) {
     const derivedStats = calculateDerivedStats(pokemon)
     return (
         <Card key={pokemon.personalId} className="p-4">
@@ -74,7 +74,7 @@ export default function pokemonComponent({ pokemon, updatePokemon, removePokemon
                     <Button size="sm" variant="outline"><Copy size={16} /></Button>
                     <Button size="sm" variant="outline"><Download size={16} /></Button>
                     <Button size="sm" variant="outline"><ArrowUpDown size={16} /></Button>
-                    <Button size="sm" variant="outline" onClick={() => removePokemonFromTeam(pokemon.personalId)}><Trash2 size={16} /></Button>
+                    <Button size="sm" variant="outline" onClick={() => deletePokemonFromTeam(pokemon)}><Trash2 size={16} /></Button>
                 </div>
             </div>
             <div className="flex">

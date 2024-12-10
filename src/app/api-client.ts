@@ -110,6 +110,30 @@ export const addPokemonToTeam = async (team: Team, basePokemonId: number, setTea
     }
 };
 
+export const deletePokemonFromTeam = async (team: Team, pokemon: Pokemon, setTeam: (team: Team) => void) => {
+    try {
+        const pokemonId = pokemon.personalId
+        await axios.post(
+            `${apiConnectionStringBase}/Team/DeletePokemonFromTeam`,
+            { pokemonId: pokemonId },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getAccessToken()}`
+                }
+            }
+        );
+
+        const updatedTeam = {
+            ...team,
+            pokemons: team.pokemons.filter(pokemon => pokemon.personalId !== pokemonId)
+        };
+
+        setTeam(updatedTeam);
+    } catch (error) {
+        console.error('Error adding pokemon to team:', error);
+    }
+};
 
 export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number) => {
     try {

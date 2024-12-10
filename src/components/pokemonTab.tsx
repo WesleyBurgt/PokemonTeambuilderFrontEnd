@@ -12,7 +12,7 @@ import PokemonMoveComponent from './pokemonMoveComponent'
 interface PokemonTabProps {
     pokemon: Pokemon
     updatePokemon: (pokemon: Pokemon) => void
-    removePokemonFromTeam: (id: number) => void
+    deletePokemonFromTeam: (pokemon: Pokemon) => void
     setSelectedPokemon: (pokemon: Pokemon) => void
     setSelectedMoveSlot: (moveslot: number | null) => void
     setView: (view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList') => void
@@ -23,7 +23,7 @@ interface PokemonTabProps {
     view: 'list' | 'statTab' | 'itemTab' | 'abilityTab' | 'moveTab' | 'team' | 'teamList'
 }
 
-export default function PokemonTab({ pokemon, updatePokemon, removePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, natures, items, selectedMoveSlot, view }: PokemonTabProps) {
+export default function PokemonTab({ pokemon, updatePokemon, deletePokemonFromTeam, setSelectedPokemon, setSelectedMoveSlot, setView, genders, natures, items, selectedMoveSlot, view }: PokemonTabProps) {
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
@@ -33,7 +33,7 @@ export default function PokemonTab({ pokemon, updatePokemon, removePokemonFromTe
             <PokemonComponent
                 pokemon={pokemon}
                 updatePokemon={updatePokemon}
-                removePokemonFromTeam={removePokemonFromTeam}
+                deletePokemonFromTeam={deletePokemonFromTeam}
                 setSelectedPokemon={setSelectedPokemon}
                 selectedMoveSlot={selectedMoveSlot}
                 setSelectedMoveSlot={setSelectedMoveSlot}

@@ -7,7 +7,7 @@ import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonTab from '@/components/pokemonTab'
-import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings, getTeams, addPokemonToTeam, createTeam } from './api-client'
+import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings, getTeams, addPokemonToTeam, deletePokemonFromTeam, createTeam } from './api-client'
 import LoginPage from './pages/LoginPage'
 import { getAccessToken } from "@/utils/tokenUtils";
 import LogoutButton from '@/components/LogoutButton'
@@ -71,13 +71,16 @@ export default function PokemonTeamBuilder() {
         }
     };
 
-    const removePokemonFromTeam = (pokemonId: number) => {
+    const deletePokemonFromSelectedTeam = (pokemon: Pokemon) => {
         if (selectedTeam) {
-            const newTeamPokemons = selectedTeam.pokemons.filter(p => p.personalId !== pokemonId)
-            _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
-            setView('team')
+            deletePokemonFromTeam(selectedTeam, pokemon, (updatedTeam) => {
+                _setSelectedTeam(updatedTeam);
+                    if (updatedTeam.pokemons && !updatedTeam.pokemons.some((p) => p.personalId === pokemon.personalId)) {
+                    setView('team');
+                }
+            });
         }
-    }
+    };
 
     const updateSelectedPokemon = (updatedPokemon: Pokemon) => {
         if (selectedTeam) {
@@ -136,7 +139,7 @@ export default function PokemonTeamBuilder() {
                             <PokemonTab
                                 pokemon={selectedPokemon}
                                 updatePokemon={updateSelectedPokemon}
-                                removePokemonFromTeam={removePokemonFromTeam}
+                                deletePokemonFromTeam={deletePokemonFromSelectedTeam}
                                 setSelectedPokemon={setSelectedPokemon}
                                 setSelectedMoveSlot={SetSelectedMoveSlot}
                                 setView={setView}
@@ -152,7 +155,7 @@ export default function PokemonTeamBuilder() {
                                 team={selectedTeam}
                                 setSelectedTeam={_setSelectedTeam}
                                 updatePokemon={updateSelectedPokemon}
-                                removePokemonFromTeam={removePokemonFromTeam}
+                                deletePokemonFromTeam={deletePokemonFromSelectedTeam}
                                 setSelectedPokemon={setSelectedPokemon}
                                 setSelectedMoveSlot={SetSelectedMoveSlot}
                                 view={view}
