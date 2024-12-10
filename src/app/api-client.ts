@@ -84,6 +84,26 @@ export const createTeam = async (teams: Team[], setTeams: (teams: Team[]) => voi
     }
 }
 
+export const setTeamName = async (team: Team, newName: string, setTeam: (team: Team) => void) => {
+    try {
+        await axios.post(
+            `${apiConnectionStringBase}/Team/SetTeamName`,
+            { teamId: team.id, teamName: newName },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getAccessToken()}`
+                }
+            }
+        );
+        
+        team.name = newName
+        setTeam(team);
+    } catch (error) {
+        console.error('Error adding pokemon to team:', error);
+    }
+}
+
 export const addPokemonToTeam = async (team: Team, basePokemonId: number, setTeam: (team: Team) => void) => {
     try {
         const response = await axios.post(

@@ -7,7 +7,7 @@ import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonTab from '@/components/pokemonTab'
-import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings, getTeams, addPokemonToTeam, deletePokemonFromTeam, createTeam } from './api-client'
+import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings, getTeams, addPokemonToTeam, deletePokemonFromTeam, createTeam, setTeamName } from './api-client'
 import LoginPage from './pages/LoginPage'
 import { getAccessToken } from "@/utils/tokenUtils";
 import LogoutButton from '@/components/LogoutButton'
@@ -42,7 +42,7 @@ export default function PokemonTeamBuilder() {
     }, [isAuthenticated]);
 
     useEffect(() => {
-        updatePokemonList() 
+        updatePokemonList()
     }, [offset, isAuthenticated])
 
     const updatePokemonList = async () => {
@@ -58,6 +58,21 @@ export default function PokemonTeamBuilder() {
             }
         }
     }
+
+    const setSelectedTeamName = async (newName: string): Promise<boolean> => {
+        if (!selectedTeam) return false;
+    
+        return new Promise((resolve) => {
+            setTeamName(selectedTeam, newName, (updatedTeam) => {
+                if (updatedTeam.name === newName) {
+                    _setSelectedTeam(updatedTeam);
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            });
+        });
+    };
 
     const addPokemonToSelectedTeam = (pokemon: BasePokemon) => {
         if (selectedTeam) {
@@ -75,7 +90,7 @@ export default function PokemonTeamBuilder() {
         if (selectedTeam) {
             deletePokemonFromTeam(selectedTeam, pokemon, (updatedTeam) => {
                 _setSelectedTeam(updatedTeam);
-                    if (updatedTeam.pokemons && !updatedTeam.pokemons.some((p) => p.personalId === pokemon.personalId)) {
+                if (updatedTeam.pokemons && !updatedTeam.pokemons.some((p) => p.personalId === pokemon.personalId)) {
                     setView('team');
                 }
             });
@@ -153,7 +168,7 @@ export default function PokemonTeamBuilder() {
                         {view === 'team' && selectedTeam && (
                             <TeamOverview
                                 team={selectedTeam}
-                                setSelectedTeam={_setSelectedTeam}
+                                setSelectedTeamName={setSelectedTeamName}
                                 updatePokemon={updateSelectedPokemon}
                                 deletePokemonFromTeam={deletePokemonFromSelectedTeam}
                                 setSelectedPokemon={setSelectedPokemon}
