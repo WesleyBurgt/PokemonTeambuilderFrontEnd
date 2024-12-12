@@ -146,9 +146,10 @@ export const addPokemonToTeam = async (team: Team, basePokemonId: number, setTea
 export const deletePokemonFromTeam = async (team: Team, pokemon: Pokemon, setTeam: (team: Team) => void) => {
     try {
         const pokemonId = pokemon.personalId
+        const teamId = team.id
         await axios.post(
             `${apiConnectionStringBase}/Team/DeletePokemonFromTeam`,
-            { pokemonId: pokemonId },
+            { teamId: teamId, pokemonId: pokemonId },
             {
                 headers: {
                     'Content-Type': 'application/json',
