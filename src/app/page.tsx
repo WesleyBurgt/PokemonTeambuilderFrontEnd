@@ -37,8 +37,10 @@ export default function PokemonTeamBuilder() {
         fetchNatures(setNatures);
         fetchTypings(setTypings);
         fetchItems(setItems);
-        getTeams(SetTeams);
         updatePokemonList();
+        if (isAuthenticated) {
+            getTeams(SetTeams);
+        }
     }, [isAuthenticated]);
 
     useEffect(() => {
@@ -121,7 +123,25 @@ export default function PokemonTeamBuilder() {
         setView('list')
     }
 
+    const resetCache = () => {
+        SetTeams([]);
+        setSelectedTeam(null);
+        setSelectedPokemon(null);
+        SetSelectedMoveSlot(null);
+        setView('teamList');
+    }
+
+    const hasPrivateCache = () => {
+        if (teams.length > 0 || selectedPokemon != null || selectedPokemon != null || selectedMoveSlot != null) {
+            return true;
+        }
+        return false;
+    }
+
     if (!isAuthenticated) {
+        if (hasPrivateCache()) {
+            resetCache();
+        }
         return <LoginPage
             setIsAuthenticated={setIsAuthenticated}
         />;
