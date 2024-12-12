@@ -102,15 +102,12 @@ export default function PokemonTeamBuilder() {
     const updatePokemonFromSelectedTeam = (newPokemon: Pokemon) => {
         if (selectedTeam) {
             updatePokemonFromTeam(selectedTeam, newPokemon, (updatedTeam) => {
-                if (updatedTeam.pokemons && !updatedTeam.pokemons.some((p) => p === newPokemon)) {
-                    console.log(newPokemon);
-                    const newTeamPokemons = selectedTeam.pokemons.map(p => p.personalId === newPokemon.personalId ? newPokemon : p)
-                    _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
-                }
-            })
+                _setSelectedTeam(updatedTeam);
+                setSelectedPokemon(newPokemon);
+            });
         }
-    }
-
+    };
+  
     const _setSelectedTeam = (team: Team) => {
         setSelectedTeam(team)
         const newTeams = teams.map(t => t.id === team.id ? team : t)
