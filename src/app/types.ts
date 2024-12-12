@@ -60,6 +60,11 @@ export interface Move {
     pp: number | null;
 }
 
+export interface selectedMove {
+    id: number
+    slot: number
+}
+
 export interface Pokemon extends BasePokemon {
     personalId: number
     nickname: string
@@ -68,7 +73,7 @@ export interface Pokemon extends BasePokemon {
     item: Item | null
     nature: Nature
     ability: Ability
-    selectedMoves: (Move | null)[]
+    selectedMoves: (selectedMove | null)[]
     eVs: Stats
     iVs: Stats
 }

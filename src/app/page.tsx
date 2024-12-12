@@ -7,7 +7,7 @@ import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
 import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
 import PokemonTab from '@/components/pokemonTab'
-import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings, getTeams, addPokemonToTeam, deletePokemonFromTeam, createTeam, setTeamName } from './api-client'
+import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings, getTeams, addPokemonToTeam, deletePokemonFromTeam, createTeam, setTeamName, updatePokemonFromTeam } from './api-client'
 import LoginPage from './pages/LoginPage'
 import { getAccessToken } from "@/utils/tokenUtils";
 import LogoutButton from '@/components/LogoutButton'
@@ -61,7 +61,7 @@ export default function PokemonTeamBuilder() {
 
     const setSelectedTeamName = async (newName: string): Promise<boolean> => {
         if (!selectedTeam) return false;
-    
+
         return new Promise((resolve) => {
             setTeamName(selectedTeam, newName, (updatedTeam) => {
                 if (updatedTeam.name === newName) {
@@ -97,11 +97,15 @@ export default function PokemonTeamBuilder() {
         }
     };
 
-    const updateSelectedPokemon = (updatedPokemon: Pokemon) => {
+    const updatePokemonFromSelectedTeam = (newPokemon: Pokemon) => {
         if (selectedTeam) {
-            setSelectedPokemon(updatedPokemon)
-            const newTeamPokemons = selectedTeam.pokemons.map(p => p.personalId === updatedPokemon.personalId ? updatedPokemon : p)
-            _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
+            updatePokemonFromTeam(selectedTeam, newPokemon, (updatedTeam) => {
+                if (updatedTeam.pokemons && !updatedTeam.pokemons.some((p) => p === newPokemon)) {
+                    console.log(newPokemon);
+                    const newTeamPokemons = selectedTeam.pokemons.map(p => p.personalId === newPokemon.personalId ? newPokemon : p)
+                    _setSelectedTeam({ ...selectedTeam, pokemons: newTeamPokemons })
+                }
+            })
         }
     }
 
@@ -153,7 +157,7 @@ export default function PokemonTeamBuilder() {
                         {(view === 'statTab' || view === 'itemTab' || view === 'abilityTab' || (view === 'moveTab' && selectedMoveSlot != null)) && selectedTeam && selectedPokemon && (
                             <PokemonTab
                                 pokemon={selectedPokemon}
-                                updatePokemon={updateSelectedPokemon}
+                                updatePokemon={updatePokemonFromSelectedTeam}
                                 deletePokemonFromTeam={deletePokemonFromSelectedTeam}
                                 setSelectedPokemon={setSelectedPokemon}
                                 setSelectedMoveSlot={SetSelectedMoveSlot}
@@ -169,7 +173,7 @@ export default function PokemonTeamBuilder() {
                             <TeamOverview
                                 team={selectedTeam}
                                 setSelectedTeamName={setSelectedTeamName}
-                                updatePokemon={updateSelectedPokemon}
+                                updatePokemon={updatePokemonFromSelectedTeam}
                                 deletePokemonFromTeam={deletePokemonFromSelectedTeam}
                                 setSelectedPokemon={setSelectedPokemon}
                                 setSelectedMoveSlot={SetSelectedMoveSlot}

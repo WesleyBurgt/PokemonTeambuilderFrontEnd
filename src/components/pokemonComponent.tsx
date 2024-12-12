@@ -172,7 +172,15 @@ export default function pokemonComponent({ pokemon, updatePokemon, deletePokemon
                                     setSelectedMoveSlot(index)
                                     setView('moveTab')
                                 }}>
-                                <div>{pokemon.selectedMoves[index]?.name}</div>
+                                <div>
+                                    {
+                                        (() => {
+                                            const selectedMoveId = pokemon.selectedMoves?.find(s => s?.slot == index)?.id;
+                                            const move = pokemon.moves.find(m => m.id === selectedMoveId);
+                                            return move ? move.name : '';
+                                        })()
+                                    }
+                                </div>
                             </Button>
                         ))}
                     </div>

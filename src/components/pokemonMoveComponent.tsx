@@ -64,8 +64,8 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, setView, 
                                         onClick={() => {
                                             updatePokemon({
                                                 ...pokemon,
-                                                selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? null : m)
-                                            })
+                                                selectedMoves: pokemon.selectedMoves.map((m, i) => (i === moveSlotIndex ? null : m)),
+                                              });
                                             if (moveSlotIndex < 3) {
                                                 setSelectedMoveSlot(moveSlotIndex + 1)
                                                 setSearchTerm('')
@@ -73,7 +73,6 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, setView, 
                                             else {
                                                 setView('statTab');
                                             }
-
                                         }}
                                     >
                                         <td className="p-2 flex items-center">
@@ -95,8 +94,10 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, setView, 
                                             onClick={() => {
                                                 updatePokemon({
                                                     ...pokemon,
-                                                    selectedMoves: pokemon.selectedMoves.map((m, i) => i === moveSlotIndex ? move : m)
-                                                })
+                                                    selectedMoves: pokemon.selectedMoves.map((m, i) =>
+                                                      i === moveSlotIndex ? { id: move.id, slot: moveSlotIndex } : m
+                                                    ),
+                                                  });
                                                 if (moveSlotIndex < 3) {
                                                     setSelectedMoveSlot(moveSlotIndex + 1)
                                                     setSearchTerm('')

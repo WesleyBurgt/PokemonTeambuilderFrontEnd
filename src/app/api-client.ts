@@ -59,7 +59,15 @@ export const getTeams = async (setTeams: (teams: Team[]) => void) => {
             }
         });
 
-        setTeams(response.data.results)
+        const processedTeams = response.data.results.map((team: Team) => ({
+            ...team,
+            pokemons: team.pokemons.map((pokemon: Pokemon) => ({
+                ...pokemon,
+                selectedMoves: [...pokemon.selectedMoves, ...Array(4 - pokemon.selectedMoves.length).fill(null)],
+            })),
+        }));
+
+        setTeams(processedTeams);
     } catch (error) {
         console.error('Error fetching teams:', error);
     }
@@ -96,7 +104,7 @@ export const setTeamName = async (team: Team, newName: string, setTeam: (team: T
                 }
             }
         );
-        
+
         team.name = newName
         setTeam(team);
     } catch (error) {
@@ -116,7 +124,12 @@ export const addPokemonToTeam = async (team: Team, basePokemonId: number, setTea
                 }
             }
         );
-        const pokemon: Pokemon = response.data;
+        let pokemon: Pokemon = response.data;
+
+        pokemon = {
+            ...pokemon,
+            selectedMoves: [...pokemon.selectedMoves, ...Array(4 - pokemon.selectedMoves.length).fill(null)],
+        };
 
         const updatedTeam = {
             ...team,
@@ -154,6 +167,33 @@ export const deletePokemonFromTeam = async (team: Team, pokemon: Pokemon, setTea
         console.error('Error adding pokemon to team:', error);
     }
 };
+
+export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, setTeam: (team: Team) => void) => {
+    try {
+        const response = await axios.post(
+            `${apiConnectionStringBase}/Team/UpdatePokemonFromTeam`,
+            { pokemon: newPokemon },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${getAccessToken()}`
+                }
+            }
+        );
+
+        const updatedPokemon: Pokemon = response.data;
+
+        const updatedTeam = {
+            ...team,
+            pokemons: team.pokemons.map(p => p.personalId === updatedPokemon.personalId ? updatedPokemon : p)
+        };
+
+        setTeam(updatedTeam);
+    } catch (error) {
+        console.error('Error updating pokemon in team:', error);
+    }
+};
+
 
 export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number) => {
     try {
