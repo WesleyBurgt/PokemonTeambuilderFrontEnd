@@ -181,7 +181,12 @@ export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, set
             }
         );
 
-        const updatedPokemon: Pokemon = response.data;
+        let updatedPokemon: Pokemon = response.data;
+
+        updatedPokemon = {
+            ...updatedPokemon,
+            selectedMoves: [...updatedPokemon.selectedMoves, ...Array(4 - updatedPokemon.selectedMoves.length).fill(null)],
+        };
 
         const updatedTeam = {
             ...team,
