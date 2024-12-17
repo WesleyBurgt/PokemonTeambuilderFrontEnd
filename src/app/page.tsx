@@ -28,9 +28,13 @@ export default function PokemonTeamBuilder() {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
     useEffect(() => {
-        const accessToken = getAccessToken();
-        setIsAuthenticated(!!accessToken); // Set isAuthenticated to true if a token exists
+        checkAuthentication
     }, []);
+
+    const checkAuthentication = () => {
+        const accessToken = getAccessToken();
+        setIsAuthenticated(!!accessToken);
+    }
 
     useEffect(() => {
         fetchGenders(setGenders);
@@ -63,7 +67,9 @@ export default function PokemonTeamBuilder() {
 
     const setSelectedTeamName = async (newName: string): Promise<boolean> => {
         if (!selectedTeam) return false;
+        checkAuthentication();
 
+        if (!isAuthenticated) return false;
         return new Promise((resolve) => {
             setTeamName(selectedTeam, newName, (updatedTeam) => {
                 if (updatedTeam.name === newName) {
@@ -78,36 +84,48 @@ export default function PokemonTeamBuilder() {
 
     const addPokemonToSelectedTeam = (pokemon: BasePokemon) => {
         if (selectedTeam) {
-            addPokemonToTeam(selectedTeam, pokemon.id, _setSelectedTeam)
-                .then((newPokemon) => {
-                    if (newPokemon != undefined) {
-                        setSelectedPokemon(newPokemon);
-                        setView('itemTab')
-                    }
-                });
+            checkAuthentication();
+
+            if (isAuthenticated) {
+                addPokemonToTeam(selectedTeam, pokemon.id, _setSelectedTeam)
+                    .then((newPokemon) => {
+                        if (newPokemon != undefined) {
+                            setSelectedPokemon(newPokemon);
+                            setView('itemTab')
+                        }
+                    });
+            }
         }
     };
 
     const deletePokemonFromSelectedTeam = (pokemon: Pokemon) => {
         if (selectedTeam) {
-            deletePokemonFromTeam(selectedTeam, pokemon, (updatedTeam) => {
-                _setSelectedTeam(updatedTeam);
-                if (updatedTeam.pokemons && !updatedTeam.pokemons.some((p) => p.personalId === pokemon.personalId)) {
-                    setView('team');
-                }
-            });
+            checkAuthentication();
+
+            if (isAuthenticated) {
+                deletePokemonFromTeam(selectedTeam, pokemon, (updatedTeam) => {
+                    _setSelectedTeam(updatedTeam);
+                    if (updatedTeam.pokemons && !updatedTeam.pokemons.some((p) => p.personalId === pokemon.personalId)) {
+                        setView('team');
+                    }
+                });
+            }
         }
     };
 
     const updatePokemonFromSelectedTeam = (newPokemon: Pokemon) => {
         if (selectedTeam) {
-            updatePokemonFromTeam(selectedTeam, newPokemon, (updatedTeam) => {
-                _setSelectedTeam(updatedTeam);
-                setSelectedPokemon(newPokemon);
-            });
+            checkAuthentication();
+
+            if (isAuthenticated) {
+                updatePokemonFromTeam(selectedTeam, newPokemon, (updatedTeam) => {
+                    _setSelectedTeam(updatedTeam);
+                    setSelectedPokemon(newPokemon);
+                });
+            }
         }
     };
-  
+
     const _setSelectedTeam = (team: Team) => {
         setSelectedTeam(team)
         const newTeams = teams.map(t => t.id === team.id ? team : t)
