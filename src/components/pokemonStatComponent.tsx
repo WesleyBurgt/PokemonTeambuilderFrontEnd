@@ -118,8 +118,11 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                             }
                         }}>
                             <SelectTrigger id="nature-select" className="nature-select">
-                                <SelectValue placeholder={pokemon.nature.name} />
-                            </SelectTrigger>
+                                <SelectValue
+                                    placeholder={
+                                        pokemon.nature.up && pokemon.nature.down ? `${pokemon.nature.name} (+${pokemon.nature.up}, -${pokemon.nature.down})` : pokemon.nature.name
+                                    }/>                            
+                                    </SelectTrigger>
                             <SelectContent>
                                 {natures.map(nature => (
                                     <SelectItem key={nature.name} value={nature.name}>

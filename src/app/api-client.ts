@@ -240,6 +240,7 @@ export const fetchNatures = async (setNatures: (natures: Nature[]) => void) => {
         const data = await response.json();
         const detailedNatures = await Promise.all(
             data.results.map((natureResponse: Nature) => ({
+                id: natureResponse.id,
                 name: natureResponse.name,
                 up: natureResponse.up,
                 down: natureResponse.down,

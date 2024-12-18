@@ -85,6 +85,7 @@ export interface Team {
 }
 
 export interface Nature {
+    id: number
     name: string
     up: keyof Pokemon['baseStats']
     down: keyof Pokemon['baseStats']
