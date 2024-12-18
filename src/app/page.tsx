@@ -42,6 +42,9 @@ export default function PokemonTeamBuilder() {
         fetchTypings(setTypings);
         fetchItems(setItems);
         updatePokemonList();
+    }, []);
+
+    useEffect(() => {
         if (isAuthenticated) {
             getTeams(SetTeams);
         }
@@ -49,7 +52,7 @@ export default function PokemonTeamBuilder() {
 
     useEffect(() => {
         updatePokemonList()
-    }, [offset, isAuthenticated])
+    }, [offset])
 
     const updatePokemonList = async () => {
         const result = await fetchPokemonList(offset, pokemonFetchLimit)
