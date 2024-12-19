@@ -46,12 +46,15 @@ export default function PokemonTeamBuilder() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            getTeams(SetTeams);
+            getTeams(SetTeams).then(loadBasePokemonInTeams);
         }
     }, [isAuthenticated]);
 
     useEffect(() => {
         updatePokemonList()
+        if (isAuthenticated) {
+            loadBasePokemonInTeams();
+        }
     }, [offset])
 
     const updatePokemonList = async () => {
@@ -67,6 +70,26 @@ export default function PokemonTeamBuilder() {
             }
         }
     }
+
+    const loadBasePokemonInTeams = async () => {
+        try {
+            const basePokemonMap = new Map(pokemonList.map(bp => [bp.id, bp]));
+
+            const enhancedTeams = teams.map(team => ({
+                ...team,
+                pokemons: team.pokemons.map(pokemon => ({
+                    ...pokemon,
+                    basePokemon: basePokemonMap.get(pokemon.basePokemonId) || null,
+                    selectedMoves: [...pokemon.selectedMoves, ...Array(4 - pokemon.selectedMoves.length).fill(null)],
+                })),
+            }));
+
+            SetTeams(enhancedTeams);
+        } catch (error) {
+            console.error('Error loading teams with BasePokemon:', error);
+        }
+    }
+
 
     const setSelectedTeamName = async (newName: string): Promise<boolean> => {
         if (!selectedTeam) return false;
@@ -90,7 +113,7 @@ export default function PokemonTeamBuilder() {
             checkAuthentication();
 
             if (isAuthenticated) {
-                addPokemonToTeam(selectedTeam, pokemon.id, _setSelectedTeam)
+                addPokemonToTeam(selectedTeam, pokemon, _setSelectedTeam)
                     .then((newPokemon) => {
                         if (newPokemon != undefined) {
                             setSelectedPokemon(newPokemon);
@@ -121,10 +144,14 @@ export default function PokemonTeamBuilder() {
             checkAuthentication();
 
             if (isAuthenticated) {
-                updatePokemonFromTeam(selectedTeam, newPokemon, (updatedTeam) => {
-                    _setSelectedTeam(updatedTeam);
-                    setSelectedPokemon(newPokemon);
-                });
+                const basePokemonMap = new Map(pokemonList.map(bp => [bp.id, bp]));
+                const basePokemon = basePokemonMap.get(newPokemon.basePokemonId);
+                if (basePokemon) {
+                    updatePokemonFromTeam(selectedTeam, newPokemon, basePokemon, (updatedTeam) => {
+                        _setSelectedTeam(updatedTeam);
+                        setSelectedPokemon(newPokemon);
+                    });
+                }
             }
         }
     };

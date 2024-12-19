@@ -19,15 +19,15 @@ interface PokemonMoveTabProps {
 
 export default function PokemonMoveComponent({ pokemon, updatePokemon, setView, setSelectedMoveSlot, moveSlotIndex }: PokemonMoveTabProps) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredMoveList, setFilteredMoveList] = useState<Move[]>(pokemon.moves);
+    const [filteredMoveList, setFilteredMoveList] = useState<Move[]>(pokemon.basePokemon?.moves || []);
 
     useEffect(() => {
-        const filteredList = pokemon.moves.filter(move =>
+        const filteredList = pokemon.basePokemon?.moves?.filter(move =>
             move.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        ) || [];
 
         setFilteredMoveList(filteredList);
-    }, [searchTerm, pokemon.moves]);
+    }, [searchTerm, pokemon.basePokemon?.moves]);
 
     return (
         <div>
@@ -65,7 +65,7 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, setView, 
                                             updatePokemon({
                                                 ...pokemon,
                                                 selectedMoves: pokemon.selectedMoves.map((m, i) => (i === moveSlotIndex ? null : m)),
-                                              });
+                                            });
                                             if (moveSlotIndex < 3) {
                                                 setSelectedMoveSlot(moveSlotIndex + 1)
                                                 setSearchTerm('')
@@ -95,9 +95,9 @@ export default function PokemonMoveComponent({ pokemon, updatePokemon, setView, 
                                                 updatePokemon({
                                                     ...pokemon,
                                                     selectedMoves: pokemon.selectedMoves.map((m, i) =>
-                                                      i === moveSlotIndex ? { id: move.id, slot: moveSlotIndex } : m
+                                                        i === moveSlotIndex ? { id: move.id, slot: moveSlotIndex } : m
                                                     ),
-                                                  });
+                                                });
                                                 if (moveSlotIndex < 3) {
                                                     setSelectedMoveSlot(moveSlotIndex + 1)
                                                     setSearchTerm('')

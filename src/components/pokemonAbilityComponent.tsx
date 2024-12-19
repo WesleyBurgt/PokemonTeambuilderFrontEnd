@@ -9,6 +9,9 @@ interface PokemonAbilityTabProps {
 }
 
 export default function PokemonAbilityComponent({ pokemon, updatePokemon, setView, setSelectedMoveSlot }: PokemonAbilityTabProps) {
+    if(!pokemon.basePokemon){
+        return (<div></div>)
+    }
     return (
         <div>
             <Card>
@@ -22,7 +25,7 @@ export default function PokemonAbilityComponent({ pokemon, updatePokemon, setVie
                                 </tr>
                             </thead>
                             <tbody>
-                                {pokemon.abilities
+                                {pokemon.basePokemon.abilities
                                     .filter(ability => !ability.isHidden)
                                     .map((ability, index) => (
                                         <tr
@@ -43,7 +46,7 @@ export default function PokemonAbilityComponent({ pokemon, updatePokemon, setVie
                                         </tr>
                                     ))}
 
-                                {pokemon.abilities.some(ability => ability.isHidden) && (
+                                {pokemon.basePokemon.abilities.some(ability => ability.isHidden) && (
                                     <tr className="bg-zinc-200">
                                         <td colSpan={2} className="p-2 font-semibold">
                                             Hidden Abilities
@@ -51,7 +54,7 @@ export default function PokemonAbilityComponent({ pokemon, updatePokemon, setVie
                                     </tr>
                                 )}
 
-                                {pokemon.abilities
+                                {pokemon.basePokemon.abilities
                                     .filter(ability => ability.isHidden)
                                     .map((ability, index) => (
                                         <tr

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select"
 import { Card } from "@/components/ui/card"
 import { Copy, Download, ArrowUpDown, Trash2 } from 'lucide-react'
-import { Pokemon } from '@/app//types'
+import { BasePokemon, Pokemon } from '@/app//types'
 import PokemonTypingComponent from './pokemonTyping'
 
 interface ComponentProps {
@@ -26,7 +26,7 @@ interface ComponentProps {
     genders: string[]
 }
 
-const statAbbreviations: { [key in keyof Pokemon['baseStats']]: string } = {
+const statAbbreviations: { [key in keyof BasePokemon['baseStats']]: string } = {
     hp: 'HP',
     attack: 'Atk',
     defense: 'Def',
@@ -35,7 +35,19 @@ const statAbbreviations: { [key in keyof Pokemon['baseStats']]: string } = {
     speed: 'Spe',
 };
 
-function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
+export function calculateDerivedStats(pokemon: Pokemon): BasePokemon['baseStats'] {
+    if (!pokemon.basePokemon) {
+        console.warn(`BasePokemon data is missing for Pokémon with personalId: ${pokemon.personalId}`);
+        return {
+            hp: 0,
+            attack: 0,
+            defense: 0,
+            specialAttack: 0,
+            specialDefense: 0,
+            speed: 0,
+        };
+    }
+
     const level = pokemon.level;
 
     const calculateStat = (
@@ -47,19 +59,19 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
         return Math.floor(((((2 * baseStat + iv + Math.floor(ev / 4)) * level) / 100) + 5) * natureMultiplier);
     };
 
-    const getNatureMultiplier = (stat: keyof Pokemon['baseStats']): number => {
+    const getNatureMultiplier = (stat: keyof BasePokemon['baseStats']): number => {
         if (pokemon.nature.up == stat) return 1.1;
         if (pokemon.nature.down == stat) return 0.9;
         return 1;
     };
 
-    const derivedStats: Pokemon['baseStats'] = {
-        hp: Math.floor(((2 * pokemon.baseStats.hp + pokemon.iVs.hp + Math.floor(pokemon.eVs.hp / 4)) * level) / 100) + level + 10,
-        attack: calculateStat(pokemon.baseStats.attack, pokemon.eVs.attack, pokemon.iVs.attack, getNatureMultiplier('attack')),
-        defense: calculateStat(pokemon.baseStats.defense, pokemon.eVs.defense, pokemon.iVs.defense, getNatureMultiplier('defense')),
-        specialAttack: calculateStat(pokemon.baseStats.specialAttack, pokemon.eVs.specialAttack, pokemon.iVs.specialAttack, getNatureMultiplier('specialAttack')),
-        specialDefense: calculateStat(pokemon.baseStats.specialDefense, pokemon.eVs.specialDefense, pokemon.iVs.specialDefense, getNatureMultiplier('specialDefense')),
-        speed: calculateStat(pokemon.baseStats.speed, pokemon.eVs.speed, pokemon.iVs.speed, getNatureMultiplier('speed'))
+    const derivedStats: BasePokemon['baseStats'] = {
+        hp: Math.floor(((2 * pokemon.basePokemon.baseStats.hp + pokemon.iVs.hp + Math.floor(pokemon.eVs.hp / 4)) * level) / 100) + level + 10,
+        attack: calculateStat(pokemon.basePokemon.baseStats.attack, pokemon.eVs.attack, pokemon.iVs.attack, getNatureMultiplier('attack')),
+        defense: calculateStat(pokemon.basePokemon.baseStats.defense, pokemon.eVs.defense, pokemon.iVs.defense, getNatureMultiplier('defense')),
+        specialAttack: calculateStat(pokemon.basePokemon.baseStats.specialAttack, pokemon.eVs.specialAttack, pokemon.iVs.specialAttack, getNatureMultiplier('specialAttack')),
+        specialDefense: calculateStat(pokemon.basePokemon.baseStats.specialDefense, pokemon.eVs.specialDefense, pokemon.iVs.specialDefense, getNatureMultiplier('specialDefense')),
+        speed: calculateStat(pokemon.basePokemon.baseStats.speed, pokemon.eVs.speed, pokemon.iVs.speed, getNatureMultiplier('speed'))
     };
 
     return derivedStats;
@@ -67,6 +79,9 @@ function calculateDerivedStats(pokemon: Pokemon): Pokemon['baseStats'] {
 
 export default function pokemonComponent({ pokemon, updatePokemon, deletePokemonFromTeam, setSelectedPokemon, selectedMoveSlot, setSelectedMoveSlot, view, setView, genders }: ComponentProps) {
     const derivedStats = calculateDerivedStats(pokemon)
+    if (!pokemon.basePokemon) {
+        return (<div></div>);
+    }
     return (
         <Card key={pokemon.personalId} className="p-4">
             <div className="flex justify-end mb-2">
@@ -80,7 +95,7 @@ export default function pokemonComponent({ pokemon, updatePokemon, deletePokemon
             <div className="flex">
                 <div className="w-1/3 min-w-60">
                     <div className="flex items-center">
-                        <img src={pokemon.sprite} alt={pokemon.name} className="w-24 h-24 mr-4" loading="lazy" />
+                        <img src={pokemon.basePokemon.sprite} alt={pokemon.basePokemon.name} className="w-24 h-24 mr-4" loading="lazy" />
                         <div>
                             <Input
                                 value={pokemon.nickname}
@@ -91,7 +106,7 @@ export default function pokemonComponent({ pokemon, updatePokemon, deletePokemon
                                 className="text-lg font-bold mb-2"
                             />
                             <div className="flex space-x-2">
-                                {pokemon.typings
+                                {pokemon.basePokemon.typings
                                     .sort((a, b) => a.slot - b.slot)
                                     .map(typing => (
                                         <div key={typing.typing.name}>
@@ -104,7 +119,7 @@ export default function pokemonComponent({ pokemon, updatePokemon, deletePokemon
                     </div>
                     <div className="mt-2">
                         <Label>Pokémon</Label>
-                        <Input value={pokemon.name} readOnly className="bg-gray-100" />
+                        <Input value={pokemon.basePokemon.name} readOnly className="bg-gray-100" />
                     </div>
                     <div className="mt-2">
                         <Label>Item</Label>
@@ -168,15 +183,15 @@ export default function pokemonComponent({ pokemon, updatePokemon, deletePokemon
                                 variant={'outline'}
                                 className={`w-full justify-start my-2 ${(view === 'moveTab' && index === selectedMoveSlot) ? 'outline outline-sky-400' : ''}`}
                                 onClick={() => {
-                                    setSelectedPokemon(pokemon)
-                                    setSelectedMoveSlot(index)
-                                    setView('moveTab')
+                                    setSelectedPokemon(pokemon);
+                                    setSelectedMoveSlot(index);
+                                    setView('moveTab');
                                 }}>
                                 <div>
                                     {
                                         (() => {
-                                            const selectedMoveId = pokemon.selectedMoves?.find(s => s?.slot == index)?.id;
-                                            const move = pokemon.moves.find(m => m.id === selectedMoveId);
+                                            const selectedMoveId = pokemon.selectedMoves?.find(s => s?.slot === index)?.id;
+                                            const move = pokemon.basePokemon?.moves?.find(m => m.id === selectedMoveId);
                                             return move ? move.name : '';
                                         })()
                                     }
@@ -194,7 +209,7 @@ export default function pokemonComponent({ pokemon, updatePokemon, deletePokemon
                         }}>
                             {Object.entries(derivedStats).map(([stat, value]) => (
                                 <div key={stat} className="flex items-center mt-1">
-                                    <span className="w-10 text-right mr-10">{statAbbreviations[stat as keyof Pokemon['baseStats']]}</span>
+                                    <span className="w-10 text-right mr-10">{statAbbreviations[stat as keyof BasePokemon['baseStats']]}</span>
                                     <div className="flex-1 bg-gray-200 rounded-full h-2.5">
                                         <div
                                             className="bg-blue-600 h-2.5 rounded-full"

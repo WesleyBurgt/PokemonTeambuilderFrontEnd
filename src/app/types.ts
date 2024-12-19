@@ -65,8 +65,10 @@ export interface selectedMove {
     slot: number
 }
 
-export interface Pokemon extends BasePokemon {
+export interface Pokemon {
     personalId: number
+    basePokemonId: number
+    basePokemon: BasePokemon | null
     nickname: string
     level: number
     gender: string
@@ -87,6 +89,6 @@ export interface Team {
 export interface Nature {
     id: number
     name: string
-    up: keyof Pokemon['baseStats']
-    down: keyof Pokemon['baseStats']
+    up: keyof BasePokemon['baseStats']
+    down: keyof BasePokemon['baseStats']
 }

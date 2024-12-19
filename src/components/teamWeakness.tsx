@@ -12,7 +12,7 @@ export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
     const getEffectiveness = (pokemon: Pokemon, typing: Typing): string => {
         let effectiveness = 1;
 
-        pokemon.typings.forEach(pokemonTyping => {
+        pokemon.basePokemon?.typings.forEach(pokemonTyping => {
             if (pokemonTyping.typing.immunities.some(immunity => immunity.name === typing.name)) {
                 effectiveness = 0;
             }
@@ -40,7 +40,7 @@ export default function teamWeakness({ team, typings }: TeamWeaknessProps) {
                         <th>Move</th>
                         {team.pokemons.map(pokemon => (
                             <th key={`header-${pokemon.personalId}`}>
-                                <img src={pokemon.sprite} alt={pokemon.name} className="w-full min-w-20 h-20 object-contain" />
+                                <img src={pokemon.basePokemon?.sprite} alt={pokemon.basePokemon?.name} className="w-full min-w-20 h-20 object-contain" />
                             </th>
                         ))}
                         <th>Total Weak</th>

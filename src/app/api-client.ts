@@ -112,8 +112,9 @@ export const setTeamName = async (team: Team, newName: string, setTeam: (team: T
     }
 }
 
-export const addPokemonToTeam = async (team: Team, basePokemonId: number, setTeam: (team: Team) => void) => {
+export const addPokemonToTeam = async (team: Team, basePokemon: BasePokemon, setTeam: (team: Team) => void) => {
     try {
+        const basePokemonId = basePokemon.id;
         const response = await axios.post(
             `${apiConnectionStringBase}/Team/AddPokemonToTeam`,
             { teamId: team.id, basePokemonId },
@@ -129,6 +130,7 @@ export const addPokemonToTeam = async (team: Team, basePokemonId: number, setTea
         pokemon = {
             ...pokemon,
             selectedMoves: [...pokemon.selectedMoves, ...Array(4 - pokemon.selectedMoves.length).fill(null)],
+            basePokemon: basePokemon
         };
 
         const updatedTeam = {
@@ -169,16 +171,18 @@ export const deletePokemonFromTeam = async (team: Team, pokemon: Pokemon, setTea
     }
 };
 
-export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, setTeam: (team: Team) => void) => {
+export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, basePokemon: BasePokemon, setTeam: (team: Team) => void) => {
     try {
+        const { basePokemon, ...pokemonWithoutBase } = newPokemon;
+
         const response = await axios.post(
             `${apiConnectionStringBase}/Team/UpdatePokemonFromTeam`,
-            { pokemon: newPokemon },
+            { pokemon: pokemonWithoutBase },
             {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${getAccessToken()}`
-                }
+                    Authorization: `Bearer ${getAccessToken()}`,
+                },
             }
         );
 
@@ -186,12 +190,18 @@ export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, set
 
         updatedPokemon = {
             ...updatedPokemon,
-            selectedMoves: [...updatedPokemon.selectedMoves, ...Array(4 - updatedPokemon.selectedMoves.length).fill(null)],
+            basePokemon: basePokemon,
+            selectedMoves: [
+                ...updatedPokemon.selectedMoves,
+                ...Array(4 - updatedPokemon.selectedMoves.length).fill(null),
+            ],
         };
 
         const updatedTeam = {
             ...team,
-            pokemons: team.pokemons.map(p => p.personalId === updatedPokemon.personalId ? updatedPokemon : p)
+            pokemons: team.pokemons.map((p) =>
+                p.personalId === updatedPokemon.personalId ? updatedPokemon : p
+            ),
         };
 
         setTeam(updatedTeam);
@@ -199,6 +209,7 @@ export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, set
         console.error('Error updating pokemon in team:', error);
     }
 };
+
 
 
 export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number) => {

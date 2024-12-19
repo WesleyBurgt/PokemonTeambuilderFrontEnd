@@ -31,11 +31,10 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView }: T
         [teams]
     );
 
-    // Effect to handle search term changes
     useEffect(() => {
         debouncedSearch(searchTerm);
         return () => {
-            debouncedSearch.cancel(); // Cleanup on unmount
+            debouncedSearch.cancel();
         };
     }, [searchTerm, debouncedSearch]);
 
@@ -46,7 +45,7 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView }: T
                     type="text"
                     placeholder="Search Teams"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}  // Immediate update
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
                 />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -62,7 +61,7 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView }: T
                             <div className="flex flex-wrap">
                                 {team.pokemons.map((pokemon) => (
                                     <div key={pokemon.personalId}>
-                                        <img src={pokemon.sprite} alt={pokemon.name} className="w-28 h-28" />
+                                        <img src={pokemon.basePokemon?.sprite} alt={pokemon.basePokemon?.name} className="w-28 h-28" />
                                     </div>
                                 ))}
                             </div>

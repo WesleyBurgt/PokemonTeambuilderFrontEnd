@@ -24,16 +24,16 @@ export default function PokemonItemComponent({pokemon, updatePokemon, setView, i
     }, [searchTerm, items]);
 
     const pokemonSpecificItems = filteredItemList.filter(item =>
-        item.description?.toLowerCase().includes(pokemon.name.toLowerCase())
+        pokemon.basePokemon && item.description?.toLowerCase().includes(pokemon.basePokemon.name.toLowerCase())
     );
-    const heldItems = filteredItemList.filter(
-        item => item.description?.toLowerCase().includes('held: ') && 
-                !item.description?.toLowerCase().includes(pokemon.name.toLowerCase())
+    
+    const heldItems = filteredItemList.filter(item => 
+        item.description?.toLowerCase().includes('held: ') && 
+            pokemon.basePokemon && !item.description?.toLowerCase().includes(pokemon.basePokemon.name.toLowerCase())
     );
-    const otherItems = filteredItemList.filter(
-        item => 
+    const otherItems = filteredItemList.filter(item => 
             !item.description?.toLowerCase().includes('held: ') &&
-            !item.description?.toLowerCase().includes(pokemon.name.toLowerCase())
+            pokemon.basePokemon && !item.description?.toLowerCase().includes(pokemon.basePokemon.name.toLowerCase())
     );
 
     return (
