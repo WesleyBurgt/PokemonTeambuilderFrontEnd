@@ -46,7 +46,10 @@ export default function PokemonTeamBuilder() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            getTeams(SetTeams).then(loadBasePokemonInTeams);
+            getTeams().then((newTeams) => {
+                SetTeams(newTeams);
+                loadBasePokemonInTeams;
+            });
         }
     }, [isAuthenticated]);
 

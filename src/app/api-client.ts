@@ -50,7 +50,7 @@ export async function registerUser(login: LoginModel): Promise<{ accesToken: str
     }
 }
 
-export const getTeams = async (setTeams: (teams: Team[]) => void) => {
+export const getTeams = async () => {
     try {
         const response = await axios.get(`${apiConnectionStringBase}/Team/GetTeams`, {
             headers: {
@@ -67,7 +67,7 @@ export const getTeams = async (setTeams: (teams: Team[]) => void) => {
             })),
         }));
 
-        setTeams(processedTeams);
+        return(processedTeams);
     } catch (error) {
         console.error('Error fetching teams:', error);
     }
