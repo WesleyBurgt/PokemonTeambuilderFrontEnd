@@ -5,9 +5,9 @@ import TeamOverview from '@/components/teamOverview'
 import PokemonList from '@/components/pokemonList'
 import TeamAnalysis from '@/components/teamAnalysis'
 import TeamList from '@/components/teamList'
-import { Typing, Nature, Item, Pokemon, BasePokemon, Team } from './types'
+import { Typing, Nature, Item, Move, Pokemon, BasePokemon, Team } from './types'
 import PokemonTab from '@/components/pokemonTab'
-import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings, getTeams, addPokemonToTeam, deletePokemonFromTeam, createTeam, setTeamName, updatePokemonFromTeam } from './api-client'
+import { fetchGenders, fetchItems, fetchNatures, fetchPokemonList, fetchTypings, fetchMoves, getTeams, addPokemonToTeam, deletePokemonFromTeam, createTeam, setTeamName, updatePokemonFromTeam } from './api-client'
 import LoginPage from './pages/LoginPage'
 import { getAccessToken } from "@/utils/tokenUtils";
 import LogoutButton from '@/components/LogoutButton'
@@ -23,6 +23,7 @@ export default function PokemonTeamBuilder() {
     const [natures, setNatures] = useState<Nature[]>([])
     const [typings, setTypings] = useState<Typing[]>([])
     const [items, setItems] = useState<Item[]>([])
+    const [moves, setMoves] = useState<Move[]>([])
     const pokemonFetchLimit = 30;
     const [offset, setOffset] = useState<number>(0)
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -41,6 +42,7 @@ export default function PokemonTeamBuilder() {
         fetchNatures(setNatures);
         fetchTypings(setTypings);
         fetchItems(setItems);
+        fetchMoves(setMoves);
         updatePokemonList();
     }, []);
 
@@ -48,7 +50,7 @@ export default function PokemonTeamBuilder() {
         if (isAuthenticated) {
             getTeams().then((newTeams) => {
                 SetTeams(newTeams);
-                loadBasePokemonInTeams;
+                loadBasePokemonWithMovesInTeams;
             });
         }
     }, [isAuthenticated]);
@@ -56,9 +58,15 @@ export default function PokemonTeamBuilder() {
     useEffect(() => {
         updatePokemonList()
         if (isAuthenticated) {
-            loadBasePokemonInTeams();
+            loadBasePokemonWithMovesInTeams();
         }
     }, [offset])
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            loadBasePokemonWithMovesInTeams();
+        }
+    }, [teams.some(team => team.pokemons.length)]);
 
     const updatePokemonList = async () => {
         const result = await fetchPokemonList(offset, pokemonFetchLimit)
@@ -74,24 +82,39 @@ export default function PokemonTeamBuilder() {
         }
     }
 
-    const loadBasePokemonInTeams = async () => {
+    const loadBasePokemonWithMovesInTeams = async () => {
         try {
+            const moveMap = new Map(moves.map(m => [m.id, m]));
             const basePokemonMap = new Map(pokemonList.map(bp => [bp.id, bp]));
 
             const enhancedTeams = teams.map(team => ({
                 ...team,
-                pokemons: team.pokemons.map(pokemon => ({
-                    ...pokemon,
-                    basePokemon: basePokemonMap.get(pokemon.basePokemonId) || null,
-                    selectedMoves: [...pokemon.selectedMoves, ...Array(4 - pokemon.selectedMoves.length).fill(null)],
-                })),
+                pokemons: team.pokemons.map(pokemon => {
+                    const basePokemon = basePokemonMap.get(pokemon.basePokemonId) || null;
+
+                    const enhancedBasePokemon = basePokemon
+                        ? {
+                            ...basePokemon,
+                            moves: basePokemon.moveIds
+                                .map(moveId => moveMap.get(moveId))
+                                .filter(move => move !== undefined),
+                        }
+                        : null;
+
+                    return {
+                        ...pokemon,
+                        basePokemon: enhancedBasePokemon,
+                        selectedMoves: [...pokemon.selectedMoves, ...Array(4 - pokemon.selectedMoves.length).fill(null)],
+                    };
+                }),
             }));
 
             SetTeams(enhancedTeams);
         } catch (error) {
-            console.error('Error loading teams with BasePokemon:', error);
+            console.error('Error loading teams with BasePokemon and moves:', error);
         }
-    }
+    };
+
 
 
     const setSelectedTeamName = async (newName: string): Promise<boolean> => {

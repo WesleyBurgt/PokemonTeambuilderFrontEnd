@@ -9,6 +9,7 @@ export interface BasePokemon {
     typings: BasePokemonTyping[];
     abilities: Ability[];
     baseStats: Stats;
+    moveIds: number[];
     moves: Move[];
     sprite: string;
 }

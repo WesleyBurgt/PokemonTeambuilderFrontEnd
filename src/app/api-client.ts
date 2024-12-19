@@ -1,4 +1,4 @@
-import { BasePokemon, Item, Nature, Pokemon, Team, Typing } from "./types";
+import { BasePokemon, Item, Move, Nature, Pokemon, Team, Typing } from "./types";
 import axios from 'axios';
 import { getAccessToken } from "@/utils/tokenUtils";
 import { LoginModel } from "./types";
@@ -223,7 +223,7 @@ export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number
                 typings: pokemon.typings.map(typing => typing),
                 abilities: pokemon.abilities.map(ability => ability),
                 baseStats: pokemon.baseStats,
-                moves: pokemon.moves.map(move => move),
+                moveIds: pokemon.moveIds,
                 sprite: pokemon.sprite
             }))
         );
@@ -311,3 +311,31 @@ export const fetchItems = async (setItems: (items: Item[]) => void) => {
         console.error('Error fetching items:', error)
     }
 };
+
+export const fetchMoves = async (setMoves: (moves: Move[]) => void) => {
+    try {
+        const response = await fetch(`${apiConnectionStringBase}/Move/List`)
+        const data = await response.json()
+
+        const moves = await Promise.all(
+            data.results.map((moveResponse: Move) => {
+                const move: Move = {
+                    id: moveResponse.id,
+                    name: moveResponse.name,
+                    description: moveResponse.description,
+                    typing: moveResponse.typing,
+                    category: moveResponse.category,
+                    basePower: moveResponse.basePower,
+                    accuracy: moveResponse.accuracy,
+                    pp: moveResponse.pp
+                };
+
+                return move;
+            })
+        );
+
+        setMoves(moves);
+    } catch (error) {
+        console.error('Error fetching items:', error)
+    }
+}
