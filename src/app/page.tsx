@@ -29,7 +29,7 @@ export default function PokemonTeamBuilder() {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
     useEffect(() => {
-        checkAuthentication
+        checkAuthentication();
     }, []);
 
     const checkAuthentication = () => {
@@ -50,7 +50,7 @@ export default function PokemonTeamBuilder() {
         if (isAuthenticated) {
             getTeams().then((newTeams) => {
                 SetTeams(newTeams);
-                loadBasePokemonWithMovesInTeams;
+                loadBasePokemonWithMovesInTeams();
             });
         }
     }, [isAuthenticated]);
