@@ -48,10 +48,15 @@ export default function PokemonTeamBuilder() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            getTeams().then((newTeams) => {
-                SetTeams(newTeams);
-                loadBasePokemonWithMovesInTeams();
-            });
+            const fetchTeams = async () => {
+                try {
+                    const newTeams = await getTeams();
+                    SetTeams(newTeams);
+                } catch (error) {
+                    console.error('Error fetching teams:', error);
+                }
+            };
+            fetchTeams();
         }
     }, [isAuthenticated]);
 
@@ -63,10 +68,10 @@ export default function PokemonTeamBuilder() {
     }, [offset])
 
     useEffect(() => {
-        if (isAuthenticated) {
+        if (teams.length > 0 && pokemonList.length > 0 && moves.length > 0) {
             loadBasePokemonWithMovesInTeams();
         }
-    }, [teams.some(team => team.pokemons.length)]);
+    }, [teams, pokemonList, moves]);
 
     const updatePokemonList = async () => {
         const result = await fetchPokemonList(offset, pokemonFetchLimit)
@@ -86,6 +91,14 @@ export default function PokemonTeamBuilder() {
         try {
             const moveMap = new Map(moves.map(m => [m.id, m]));
             const basePokemonMap = new Map(pokemonList.map(bp => [bp.id, bp]));
+
+            const needsEnhancement = teams.some(team => 
+                team.pokemons.some(pokemon => !pokemon.basePokemon)
+            );
+
+            if (!needsEnhancement) {
+                return;
+            }
 
             const enhancedTeams = teams.map(team => ({
                 ...team,
@@ -114,8 +127,6 @@ export default function PokemonTeamBuilder() {
             console.error('Error loading teams with BasePokemon and moves:', error);
         }
     };
-
-
 
     const setSelectedTeamName = async (newName: string): Promise<boolean> => {
         if (!selectedTeam) return false;

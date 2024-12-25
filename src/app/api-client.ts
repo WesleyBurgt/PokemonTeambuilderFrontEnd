@@ -2,6 +2,7 @@ import { BasePokemon, Item, Move, Nature, Pokemon, Team, Typing } from "./types"
 import axios from 'axios';
 import { getAccessToken } from "@/utils/tokenUtils";
 import { LoginModel } from "./types";
+import debounce from 'lodash.debounce';
 
 const apiConnectionStringBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
@@ -171,9 +172,9 @@ export const deletePokemonFromTeam = async (team: Team, pokemon: Pokemon, setTea
     }
 };
 
-export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, basePokemon: BasePokemon, setTeam: (team: Team) => void) => {
+const debouncedApiUpdate = debounce(async (pokemon: Pokemon, team: Team, basePokemon: BasePokemon, setTeam: (team: Team) => void) => {
     try {
-        const { basePokemon, ...pokemonWithoutBase } = newPokemon;
+        const { basePokemon: _, ...pokemonWithoutBase } = pokemon;
 
         const response = await axios.post(
             `${apiConnectionStringBase}/Team/UpdatePokemonFromTeam`,
@@ -208,9 +209,19 @@ export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, bas
     } catch (error) {
         console.error('Error updating pokemon in team:', error);
     }
+}, 3000);
+
+export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, basePokemon: BasePokemon, setTeam: (team: Team) => void) => {
+    const updatedTeam = {
+        ...team,
+        pokemons: team.pokemons.map((p) =>
+            p.personalId === newPokemon.personalId ? { ...newPokemon, basePokemon } : p
+        ),
+    };
+    setTeam(updatedTeam);
+
+    debouncedApiUpdate(newPokemon, team, basePokemon, setTeam);
 };
-
-
 
 export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number) => {
     try {
@@ -233,7 +244,6 @@ export const fetchPokemonList = async (offset: number, pokemonFetchLimit: number
         console.error('Error fetching Pokemon list:', error);
     }
 };
-
 
 export const fetchGenders = async (setGenders: (genders: string[]) => void) => {
     try {

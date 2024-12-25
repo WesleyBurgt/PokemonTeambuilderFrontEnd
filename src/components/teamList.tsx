@@ -18,7 +18,6 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView }: T
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredTeams, setFilteredTeams] = useState<Team[]>(teams);
 
-    // Debounced search function for teams
     const debouncedSearch = useMemo(
         () =>
             debounce((term: string) => {
@@ -32,11 +31,12 @@ export default function TeamList({ teams, addTeam, setSelectedTeam, setView }: T
     );
 
     useEffect(() => {
-        debouncedSearch(searchTerm);
-        return () => {
-            debouncedSearch.cancel();
-        };
-    }, [searchTerm, debouncedSearch]);
+        if (searchTerm) {
+            debouncedSearch(searchTerm);
+        } else {
+            setFilteredTeams(teams);
+        }
+    }, [teams, searchTerm]);
 
     return (
         <div>
