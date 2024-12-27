@@ -156,7 +156,7 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                                 const newValue = Math.min(252, Math.max(0, parseInt(input)));
                                                 const otherEVs = Object.entries(pokemon.eVs)
                                                     .filter(([key]) => key !== stat)
-                                                    .reduce((sum, [_, value]) => sum + value, 0);
+                                                    .reduce((sum, [, value]) => sum + value, 0);
                                                 
                                                 const maxPossibleValue = Math.min(newValue, 510 - otherEVs);
                                                 const newEvs = { ...pokemon.eVs, [stat]: maxPossibleValue };
@@ -186,7 +186,7 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                                 const newValue = parseInt(e.target.value);
                                                 const otherEVs = Object.entries(pokemon.eVs)
                                                     .filter(([key]) => key !== stat)
-                                                    .reduce((sum, [_, value]) => sum + value, 0);
+                                                    .reduce((sum, [, value]) => sum + value, 0);
                                                 
                                                 const maxPossibleValue = Math.min(newValue, 510 - otherEVs);
                                                 const newEvs = { ...pokemon.eVs, [stat]: maxPossibleValue };

@@ -1,5 +1,5 @@
 import { BasePokemon, Item, Move, Nature, Pokemon, Team, Typing } from "./types";
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { getAccessToken } from "@/utils/tokenUtils";
 import { LoginModel } from "./types";
 import debounce from 'lodash.debounce';
@@ -174,7 +174,8 @@ export const deletePokemonFromTeam = async (team: Team, pokemon: Pokemon, setTea
 
 const debouncedApiUpdate = debounce(async (pokemon: Pokemon, team: Team, basePokemon: BasePokemon, setTeam: (team: Team) => void) => {
     try {
-        const { basePokemon: _, ...pokemonWithoutBase } = pokemon;
+        const pokemonWithoutBase = { ...pokemon } as Partial<typeof pokemon>;
+        delete pokemonWithoutBase.basePokemon;
 
         const response = await axios.post(
             `${apiConnectionStringBase}/Team/UpdatePokemonFromTeam`,
@@ -215,7 +216,7 @@ const debouncedApiUpdate = debounce(async (pokemon: Pokemon, team: Team, basePok
         };
         setTeam(revertedTeam);
         
-        const errorMessage = (error as any).response?.data?.message || 'Error updating pokemon';
+        const errorMessage = (error instanceof AxiosError) ? error.response?.data?.message : 'Error updating pokemon';
         alert(errorMessage);
         console.error('Error updating pokemon in team:', error);
     }
