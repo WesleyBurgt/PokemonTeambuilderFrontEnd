@@ -207,17 +207,34 @@ const debouncedApiUpdate = debounce(async (pokemon: Pokemon, team: Team, basePok
 
         setTeam(updatedTeam);
     } catch (error) {
+        const revertedTeam = {
+            ...team,
+            pokemons: team.pokemons.map((p) =>
+                p.personalId === pokemon.personalId ? { ...pokemon, basePokemon } : p
+            ),
+        };
+        setTeam(revertedTeam);
+        
+        const errorMessage = (error as any).response?.data?.message || 'Error updating pokemon';
+        alert(errorMessage);
         console.error('Error updating pokemon in team:', error);
     }
 }, 3000);
 
 export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, basePokemon: BasePokemon, setTeam: (team: Team) => void) => {
+
+    const updatedPokemon = {
+        ...newPokemon,
+        selectedMoves: [...newPokemon.selectedMoves, ...Array(4 - newPokemon.selectedMoves.length).fill(null)]
+    };
+
     const updatedTeam = {
         ...team,
         pokemons: team.pokemons.map((p) =>
-            p.personalId === newPokemon.personalId ? { ...newPokemon, basePokemon } : p
+            p.personalId === newPokemon.personalId ? updatedPokemon : p
         ),
     };
+    
     setTeam(updatedTeam);
 
     debouncedApiUpdate(newPokemon, team, basePokemon, setTeam);

@@ -184,9 +184,19 @@ export default function PokemonTeamBuilder() {
                 const basePokemonMap = new Map(pokemonList.map(bp => [bp.id, bp]));
                 const basePokemon = basePokemonMap.get(newPokemon.basePokemonId);
                 if (basePokemon) {
-                    updatePokemonFromTeam(selectedTeam, newPokemon, basePokemon, (updatedTeam) => {
+                    const moveMap = new Map(moves.map(m => [m.id, m]));
+                    
+                    const enhancedBasePokemon = {
+                        ...basePokemon,
+                        moves: basePokemon.moveIds
+                            .map(moveId => moveMap.get(moveId))
+                            .filter((move): move is Move => move !== undefined)
+                    };
+
+                    setSelectedPokemon({ ...newPokemon, basePokemon: enhancedBasePokemon });
+                    
+                    updatePokemonFromTeam(selectedTeam, newPokemon, enhancedBasePokemon, (updatedTeam) => {
                         _setSelectedTeam(updatedTeam);
-                        setSelectedPokemon(newPokemon);
                     });
                 }
             }
