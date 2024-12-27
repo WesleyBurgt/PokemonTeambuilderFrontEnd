@@ -101,17 +101,14 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                             
                             return (
                                 <div key={stat} className="grid grid-cols-[60px_50px_1fr_80px_200px_60px_80px] items-center gap-2 mb-2 w-full">
-                                    {/* Stat Name */}
                                     <div className="text-right">
                                         {statAbbreviations[stat as keyof typeof statAbbreviations]}
                                     </div>
 
-                                    {/* Base Stat Value */}
                                     <div className="text-right">
                                         {baseValue}
                                     </div>
 
-                                    {/* Derived Stat Bar */}
                                     <div className="w-full bg-gray-200 rounded-full h-2.5">
                                         <div
                                             className="h-2.5 rounded-full"
@@ -122,21 +119,18 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                         ></div>
                                     </div>
 
-                                    {/* EV Input */}
                                     <div className="relative">
                                         <Input
                                             type="text"
                                             value={evValue}
                                             onKeyDown={(e) => {
-                                                // Handle + and - key presses
                                                 if (e.key === '+' || e.key === '-') {
-                                                    e.preventDefault(); // Prevent default input behavior
+                                                    e.preventDefault();
                                                     
                                                     const otherNatureStat = e.key === '+' ? 
                                                         pokemon.nature.down : 
                                                         pokemon.nature.up;
 
-                                                    // Find nature that affects this stat
                                                     const newNature = natures.find(nature => 
                                                         (e.key === '+' && nature.up === stat && nature.down === otherNatureStat) ||
                                                         (e.key === '-' && nature.down === stat && nature.up === otherNatureStat)
@@ -152,7 +146,6 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                             onChange={(e) => {
                                                 const input = e.target.value;
                                                 
-                                                // Handle normal EV input
                                                 if (input === '' || isNaN(parseInt(input))) {
                                                     const newEvs = { ...pokemon.eVs, [stat]: 0 };
                                                     const updatedPokemon = { ...pokemon, eVs: newEvs };
@@ -175,7 +168,6 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                                 pokemon.nature.down === stat ? 'text-blue-500' : ''
                                             }`}
                                         />
-                                        {/* Nature modifier indicator */}
                                         <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
                                             {pokemon.nature.up === stat && (
                                                 <span className="text-red-500">+</span>
@@ -186,7 +178,6 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                         </span>
                                     </div>
 
-                                    {/* EV Slider */}
                                     <div>
                                         <input
                                             type="range"
@@ -197,7 +188,6 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                                     .filter(([key]) => key !== stat)
                                                     .reduce((sum, [_, value]) => sum + value, 0);
                                                 
-                                                // Limit the new value to the remaining EVs
                                                 const maxPossibleValue = Math.min(newValue, 510 - otherEVs);
                                                 const newEvs = { ...pokemon.eVs, [stat]: maxPossibleValue };
                                                 updatePokemon({ ...pokemon, eVs: newEvs });
@@ -208,7 +198,6 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                         />
                                     </div>
 
-                                    {/* IV Input */}
                                     <div>
                                         <Input
                                             type="number"
@@ -223,7 +212,6 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                                         />
                                     </div>
 
-                                    {/* Total */}
                                     <div className="text-right">
                                         {totalValue}
                                     </div>
@@ -231,7 +219,6 @@ export default function PokemonStatComponent({ pokemon, updatePokemon, natures }
                             );
                         })}
                         
-                        {/* EV Total Counter */}
                         <div className="mt-4 text-sm flex justify-end items-center gap-2">
                             <span>EVs Remaining:</span>
                             <span className={`font-bold ${remainingEVs < 0 ? 'text-red-500' : ''}`}>
