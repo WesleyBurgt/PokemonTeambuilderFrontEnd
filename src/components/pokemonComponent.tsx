@@ -212,8 +212,11 @@ export default function pokemonComponent({ pokemon, updatePokemon, deletePokemon
                                     <span className="w-10 text-right mr-10">{statAbbreviations[stat as keyof BasePokemon['baseStats']]}</span>
                                     <div className="flex-1 bg-gray-200 rounded-full h-2.5">
                                         <div
-                                            className="bg-blue-600 h-2.5 rounded-full"
-                                            style={{ width: `${(value / 714) * 100}%` }}
+                                            className="h-2.5 rounded-full"
+                                            style={{ 
+                                                width: `${(value / 714) * 100}%`,
+                                                backgroundColor: `hsl(${(value / 714) * 180}, 85%, 45%)`
+                                            }}
                                         ></div>
                                     </div>
                                     <span className="w-10 text-right ml-2">{value}</span>
