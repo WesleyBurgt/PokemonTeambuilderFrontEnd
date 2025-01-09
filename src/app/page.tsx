@@ -69,9 +69,14 @@ export default function PokemonTeamBuilder() {
 
     useEffect(() => {
         if (teams.length > 0 && pokemonList.length > 0 && moves.length > 0) {
-            loadBasePokemonWithMovesInTeams();
+            const needsEnhancement = teams.some(team => 
+                team.pokemons.some(pokemon => !pokemon.basePokemon)
+            );
+            if (needsEnhancement) {
+                loadBasePokemonWithMovesInTeams();
+            }
         }
-    }, [teams, pokemonList, moves]);
+    }, [teams.length, pokemonList.length, moves.length]);
 
     const updatePokemonList = async () => {
         const result = await fetchPokemonList(offset, pokemonFetchLimit)
@@ -100,9 +105,17 @@ export default function PokemonTeamBuilder() {
                 return;
             }
 
+            if (moves.length === 0 || pokemonList.length === 0) {
+                return;
+            }
+
             const enhancedTeams = teams.map(team => ({
                 ...team,
                 pokemons: team.pokemons.map(pokemon => {
+                    if (pokemon.basePokemon) {
+                        return pokemon;
+                    }
+
                     const basePokemon = basePokemonMap.get(pokemon.basePokemonId) || null;
 
                     const enhancedBasePokemon = basePokemon
