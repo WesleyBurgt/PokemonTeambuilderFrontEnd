@@ -220,7 +220,7 @@ const debouncedApiUpdate = debounce(async (pokemon: Pokemon, team: Team, basePok
         alert(errorMessage);
         console.error('Error updating pokemon in team:', error);
     }
-}, 3000);
+}, 300);
 
 export const updatePokemonFromTeam = async (team: Team, newPokemon: Pokemon, basePokemon: BasePokemon, setTeam: (team: Team) => void) => {
 
