@@ -12,6 +12,55 @@ import LoginPage from './pages/LoginPage'
 import { getAccessToken } from "@/utils/tokenUtils";
 import LogoutButton from '@/components/LogoutButton'
 
+function loadBasePokemonWithMovesInTeams(moves: Move[], pokemonList: BasePokemon[], teams: Team[], setTeams: (teams: Team[]) => void) {
+    if (moves.length === 0 || pokemonList.length === 0) {
+        return;
+    }
+
+    const moveMap = new Map(moves.map(m => [m.id, m]));
+    const basePokemonMap = new Map(pokemonList.map(bp => [bp.id, bp]));
+
+    const needsEnhancement = teams.some(team => 
+        team.pokemons.some(pokemon => !pokemon.basePokemon)
+    );
+
+    if (!needsEnhancement) {
+        return;
+    }
+
+    const enhancePokemon = (pokemon: Pokemon) => {
+        if (pokemon.basePokemon) {
+            return pokemon;
+        }
+
+        const basePokemon = basePokemonMap.get(pokemon.basePokemonId) || null;
+        const enhancedBasePokemon = basePokemon
+            ? {
+                ...basePokemon,
+                moves: basePokemon.moveIds
+                    .map(moveId => moveMap.get(moveId))
+                    .filter(move => move !== undefined),
+            }
+            : null;
+
+        return {
+            ...pokemon,
+            basePokemon: enhancedBasePokemon,
+            selectedMoves: [
+                ...pokemon.selectedMoves,
+                ...Array(4 - pokemon.selectedMoves.length).fill(null),
+            ],
+        };
+    };
+
+    const enhancedTeams = teams.map(team => ({
+        ...team,
+        pokemons: team.pokemons.map(enhancePokemon),
+    }));
+
+    setTeams(enhancedTeams);
+};
+
 export default function PokemonTeamBuilder() {
     const [pokemonList, setPokemonList] = useState<BasePokemon[]>([])
     const [teams, SetTeams] = useState<Team[]>([])
@@ -63,7 +112,7 @@ export default function PokemonTeamBuilder() {
     useEffect(() => {
         updatePokemonList()
         if (isAuthenticated) {
-            loadBasePokemonWithMovesInTeams();
+            loadBasePokemonWithMovesInTeams(moves, pokemonList, teams, SetTeams);
         }
     }, [offset])
 
@@ -73,7 +122,7 @@ export default function PokemonTeamBuilder() {
                 team.pokemons.some(pokemon => !pokemon.basePokemon)
             );
             if (needsEnhancement) {
-                loadBasePokemonWithMovesInTeams();
+                loadBasePokemonWithMovesInTeams(moves, pokemonList, teams, SetTeams);
             }
         }
     }, [teams.length, pokemonList.length, moves.length]);
@@ -91,55 +140,6 @@ export default function PokemonTeamBuilder() {
             }
         }
     }
-
-    const loadBasePokemonWithMovesInTeams = async () => {
-        try {
-            const moveMap = new Map(moves.map(m => [m.id, m]));
-            const basePokemonMap = new Map(pokemonList.map(bp => [bp.id, bp]));
-
-            const needsEnhancement = teams.some(team => 
-                team.pokemons.some(pokemon => !pokemon.basePokemon)
-            );
-
-            if (!needsEnhancement) {
-                return;
-            }
-
-            if (moves.length === 0 || pokemonList.length === 0) {
-                return;
-            }
-
-            const enhancedTeams = teams.map(team => ({
-                ...team,
-                pokemons: team.pokemons.map(pokemon => {
-                    if (pokemon.basePokemon) {
-                        return pokemon;
-                    }
-
-                    const basePokemon = basePokemonMap.get(pokemon.basePokemonId) || null;
-
-                    const enhancedBasePokemon = basePokemon
-                        ? {
-                            ...basePokemon,
-                            moves: basePokemon.moveIds
-                                .map(moveId => moveMap.get(moveId))
-                                .filter(move => move !== undefined),
-                        }
-                        : null;
-
-                    return {
-                        ...pokemon,
-                        basePokemon: enhancedBasePokemon,
-                        selectedMoves: [...pokemon.selectedMoves, ...Array(4 - pokemon.selectedMoves.length).fill(null)],
-                    };
-                }),
-            }));
-
-            SetTeams(enhancedTeams);
-        } catch (error) {
-            console.error('Error loading teams with BasePokemon and moves:', error);
-        }
-    };
 
     const setSelectedTeamName = async (newName: string): Promise<boolean> => {
         if (!selectedTeam) return false;
